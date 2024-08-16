@@ -30,7 +30,9 @@ static void	philo_init(t_data *data)
 		philo->full = 0;
 		philo->meals_eaten = 0;
 		philo->data = data;
+		safe_mutex(&philo->philo_mutex, INIT);
 		fork_assignement(philo, data->forks, i);
+		i++;
 	}
 }
 
@@ -44,6 +46,7 @@ void	init_data(t_data *data)
 	data->philos = safe_malloc(sizeof(t_philo) * data->philo_num);
 	data->forks = safe_malloc(sizeof(t_fork) * data->philo_num);
     safe_mutex(&data->data_mutex, INIT);
+	safe_mutex(&data->write_mutex, INIT);
 	while (i < data->philo_num)
 	{
 		safe_mutex(&data->forks[i].fork, INIT);

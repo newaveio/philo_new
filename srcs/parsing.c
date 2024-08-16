@@ -68,7 +68,7 @@ static long	ft_atol(char *str)
 void	parsing(t_data *data, char **av)
 {
 	data->philo_num = ft_atol(av[1]);
-    data->time_to_die = ft_atol(av[2]) * 1e3;
+    data->time_to_die = ft_atol(av[2]) * 1e3; // Convert to microseconds for usleep() function
 	data->time_to_eat = ft_atol(av[3]) * 1e3;
 	data->time_to_sleep = ft_atol(av[4]) * 1e3;
 	if (av[5])

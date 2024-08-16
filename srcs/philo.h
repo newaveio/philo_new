@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:00:37 by mbest             #+#    #+#             */
-/*   Updated: 2024/08/15 19:54:07 by mbest            ###   ########.fr       */
+/*   Updated: 2024/08/16 19:19:15 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,12 @@
 
 # include <errno.h>
 # include <limits.h>
-# include <pthread.h> //! Comment
-# include <stdio.h>   //? comment2
+# include <pthread.h>
+# include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
 
-# define MUTEX_INIT_FF "pthread_mutex_init_failed"
-# define MALLOC_FF "malloc failed"
-# define PTHR_MUT_LOCK_FF "pthread_mutex_lock failed"
-# define PTHR_MUT_UNLOCK_FF "pthread_mutex_unlock failed"
-# define PTHR_CREAT_FF "pthread_create failed"
-# define PTHR_JOIN_FF "pthread_join failed"
 
 # define RST "\033[0m"    /* RESET to DEFAULT color */
 # define RED "\033[1;31m" /* BOLD RED */
@@ -35,13 +29,18 @@
 # define MAG "\033[1;35m" /* BOLD MAGENTA */
 # define CYA "\033[1;36m" /* BOLD CYAN */
 
-// Do a e_num
-# define DEAD 1
-# define EAT 2
-# define SLEEP 3
-
 typedef pthread_mutex_t	t_mtx;
 typedef struct s_data	t_data;
+
+typedef enum e_status
+{
+	EATING,
+	SLEEPING,
+	THINKING,
+	TAKE_FIRST_FORK,
+	TAKE_SECOND_FORK,
+	DIED,
+}						t_philo_status;
 
 typedef enum e_opcode
 {
@@ -79,6 +78,7 @@ typedef struct s_philo
 	// int				num_of_philos; 			//!
 	// int				num_times_to_eat;
 	// int				*dead;
+	t_mtx				philo_mutex;
 	pthread_t			thread_id;
 	t_fork				*first_fork;
 	t_fork				*second_fork;
@@ -93,13 +93,14 @@ typedef struct s_data
 	long				time_to_die;
 	long				time_to_eat;
 	long				time_to_sleep;
-	long num_meals_limit; // FLAG -1 if no argument
+	long				num_meals_limit; // FLAG -1 if no argument
 	long				start_time;
 	int					end_simulation;
 	int					are_threads_ready;
 	t_fork				*forks;
 	t_philo				*philos;
 	t_mtx				data_mutex;
+	t_mtx				write_mutex;
 	t_list				*free_list;
 	// int				dead_flag;
 	// pthread_mutex_t	dead_lock;
@@ -126,7 +127,7 @@ void					safe_thread(pthread_t *thread, void *(*foo)(void *),
 
 /* simulation.c */
 void					start_simulation(t_data *data);
-void					dinner_simulation(void *args);
+void					*dinner_simulation(void *args);
 
 /* synchro.c */
 void    				wait_for_threads(t_data *data);
@@ -142,6 +143,9 @@ void    				set_long(t_mtx *mutex, long *dest, long value);
 long    				get_long(t_mtx *mutex, long *value);
 int     				is_sim_finished(t_data *data);
 
+/* utils_2.c */
+long					gettime(void);
+void					ft_usleep(t_data *data, long usec);
 
 
 // /* checking.c */

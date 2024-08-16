@@ -9,11 +9,12 @@ int main(int ac, char **av)
     {
         // parse the input
         parsing(&data, av);
-
+        printf("Parsing finished\n");
         // init data and philos
         init_data(&data);
+        printf("Initialisation finished\n");
         // simulation
-
+        start_simulation(&data);
         // clean
     }
     else

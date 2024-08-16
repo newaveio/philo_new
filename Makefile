@@ -6,7 +6,7 @@
 #    By: mbest <mbest@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/11 15:33:52 by mbest             #+#    #+#              #
-#    Updated: 2024/08/15 18:53:27 by mbest            ###   ########.fr        #
+#    Updated: 2024/08/16 19:20:48 by mbest            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,8 @@ _SALMON = \033[38;5;209m
 SRC_DIR = srcs/
 OBJ_DIR = objs/
 
-FILES = init.c main.c mutex_functions.c parsing.c safe_functions.c simulation.c thread_functions.c utils.c
+FILES = init.c main.c mutex_functions.c parsing.c safe_functions.c simulation.c \
+		synchro.c thread_functions.c utils.c utils2.c
 H_FILES = philo.h
 
 SRCS = $(addprefix $(SRC_DIR),$(FILES))

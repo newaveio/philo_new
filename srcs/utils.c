@@ -42,5 +42,5 @@ long    get_long(t_mtx *mutex, long *value)
 
 int     is_sim_finished(t_data *data)
 {
-    return (get_int(&data->data_mutex, data->end_simulation));
+    return (get_int(&data->data_mutex, &data->end_simulation));
 }
