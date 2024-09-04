@@ -2,7 +2,7 @@
 
 static inline int	is_digit(char c)
 {
-	if (c >= 49 && c <= 57)
+	if (c >= 48 && c <= 57)
 		return (1);
 	else
 		return (0);
@@ -68,11 +68,16 @@ static long	ft_atol(char *str)
 void	parsing(t_data *data, char **av)
 {
 	data->philo_num = ft_atol(av[1]);
-    data->time_to_die = ft_atol(av[2]) * 1e3; // Convert to microseconds for usleep() function
-	data->time_to_eat = ft_atol(av[3]) * 1e3;
-	data->time_to_sleep = ft_atol(av[4]) * 1e3;
+    data->time_to_die = ft_atol(av[2]); 
+	data->time_to_eat = ft_atol(av[3]) ;
+	data->time_to_sleep = ft_atol(av[4]) ;
 	if (av[5])
 		data->num_meals_limit = ft_atol(av[5]);
 	else
 		data->num_meals_limit = -1;
+	// printf("Number of philos = %ld\n", data->philo_num);
+	// printf("Time to die = %ld\n", data->time_to_die);
+	// printf("Time to eat = %ld\n", data->time_to_eat);
+	// printf("Time to sleep = %ld\n", data->time_to_sleep);
+	// printf("Number of meals to eat = %ld\n", data->num_meals_limit);
 }

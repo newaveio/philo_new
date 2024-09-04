@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mathieu <mathieu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:00:37 by mbest             #+#    #+#             */
-/*   Updated: 2024/08/16 19:19:15 by mbest            ###   ########.fr       */
+/*   Updated: 2024/08/19 18:24:39 by mathieu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
+# include <stdbool.h>
 
 
 # define RST "\033[0m"    /* RESET to DEFAULT color */
@@ -27,7 +28,12 @@
 # define GRE "\033[1;32m" /* BOLD GREEN */
 # define BLU "\033[1;34m" /* BOLD BLUE */
 # define MAG "\033[1;35m" /* BOLD MAGENTA */
+# define YEL "\033[1;33m" /* BOLD YELLOW */
+# define ORA "\033[1;38;5;208m" /* BOLD ORANGE */
 # define CYA "\033[1;36m" /* BOLD CYAN */
+# define GRY "\033[1;90m" /* BOLD GREY */
+
+# define DEBUG true
 
 typedef pthread_mutex_t	t_mtx;
 typedef struct s_data	t_data;
@@ -69,7 +75,7 @@ typedef struct s_philo
 {
 	int					id;
 	int					full;
-	int					meals_eaten;
+	long				meals_eaten;
 	long				last_meal;
 	// long long		time_to_die;
 	// long long		time_to_eat;
@@ -79,7 +85,7 @@ typedef struct s_philo
 	// int				num_times_to_eat;
 	// int				*dead;
 	t_mtx				philo_mutex;
-	pthread_t			thread_id;
+	pthread_t			thread_id; // change this to thread
 	t_fork				*first_fork;
 	t_fork				*second_fork;
 	t_data				*data;
@@ -95,23 +101,24 @@ typedef struct s_data
 	long				time_to_sleep;
 	long				num_meals_limit; // FLAG -1 if no argument
 	long				start_time;
+	long				threads_running;
 	int					end_simulation;
-	int					are_threads_ready;
+	int					are_threads_ready; // change to ready
 	t_fork				*forks;
 	t_philo				*philos;
+	pthread_t			monitor;
 	t_mtx				data_mutex;
-	t_mtx				write_mutex;
+	t_mtx				write_mutex; // change to write lock
 	t_list				*free_list;
-	// int				dead_flag;
-	// pthread_mutex_t	dead_lock;
-	// pthread_mutex_t	write_lock;
-	// pthread_mutex_t *forks;
 }						t_data;
 
 /* *** PROTOTYPES *** */
 
 /* init.c */
 void					init_data(t_data *data);
+
+/* monitor.c */
+void			*monitor_routine(void *args);
 
 /* mutex_functions.c */
 void					mutex_err_handler(int status, t_opcode opcode);
@@ -128,9 +135,12 @@ void					safe_thread(pthread_t *thread, void *(*foo)(void *),
 /* simulation.c */
 void					start_simulation(t_data *data);
 void					*dinner_simulation(void *args);
+void    write_status(t_philo *philo, t_philo_status status, bool debug);
 
 /* synchro.c */
 void    				wait_for_threads(t_data *data);
+void    increase_long(t_mtx *mutex, long *value);
+int     are_threads_ready(t_mtx *mutex, long *threads, long philo_nbr);
 
 /* thread_functions.c */
 void					thread_err_handler(int status, t_opcode opcode);
@@ -145,7 +155,7 @@ int     				is_sim_finished(t_data *data);
 
 /* utils_2.c */
 long					gettime(void);
-void					ft_usleep(t_data *data, long usec);
+void					ft_usleep(long usec);
 
 
 // /* checking.c */

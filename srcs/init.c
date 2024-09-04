@@ -17,6 +17,7 @@ static void	fork_assignement(t_philo *philo, t_fork *forks, int philo_position)
     }
 }
 
+
 static void	philo_init(t_data *data)
 {
 	int		i;
@@ -43,6 +44,7 @@ void	init_data(t_data *data)
 	i = 0;
 	data->end_simulation = 0;
     data->are_threads_ready = 0;
+	data->threads_running = 0;
 	data->philos = safe_malloc(sizeof(t_philo) * data->philo_num);
 	data->forks = safe_malloc(sizeof(t_fork) * data->philo_num);
     safe_mutex(&data->data_mutex, INIT);
@@ -50,9 +52,8 @@ void	init_data(t_data *data)
 	while (i < data->philo_num)
 	{
 		safe_mutex(&data->forks[i].fork, INIT);
-		data->forks[i].id = i;
+		data->forks[i].id = i; // REMOVE AT THE END THIS IS FOR DEBUGGING
 		i++;
 	}
 	philo_init(data);
 }
-

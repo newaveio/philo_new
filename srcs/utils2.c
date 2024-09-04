@@ -6,44 +6,17 @@ long gettime(void)
 
     if (gettimeofday(&tv, NULL) != 0)
         err_exit("gettimeofday() failed.");
-    return (tv.tv_sec * 1e3 + (tv.tv_usec / 1e3));
-    // return (tv.tv_sec * 1e6 + tv.tv_usec);
+    return (tv.tv_sec * 1000 + (tv.tv_usec / 1000));
 }
 
-void ft_usleep(t_data *data, long usec)
+void ft_usleep(long milli_sec)
 {
-    long start_time = gettime();
-    while ((gettime() - start_time) < usec)
+    long start_time;
+
+    start_time = gettime();
+    while ((gettime() - start_time) < milli_sec)
     {
-        if (is_sim_finished(data))
-            break;
-        usleep(100); // Sleep for a short interval to avoid busy-waiting
+        usleep(100);
     }
 }
 
-
-// void    ft_usleep(t_data *data, long usec)
-// {
-//     long start;
-//     long elapsed;
-//     long remaining;
-
-//     start = gettime();
-//     while(gettime() - start < usec)
-//     {
-//         if (is_sim_finished(data))
-//             break;
-//         elapsed = gettime() - start;
-//         remaining = usec - elapsed;
-//         if (remaining > 1e3)
-//             usleep(remaining);
-//             // usleep(usec / 2);
-//             // usleep(remaining / 2);
-//         else
-//         {
-//             // SpInLoCk
-//             while(gettime() - start < usec)
-//                 ;
-//         }
-//     }
-// }

@@ -54,6 +54,7 @@ void	mutex_err_handler(int status, t_opcode opcode)
 {
 	if (status == 0)
 		return ; // EVERYTHING GOOD
+	printf("Error: status=%d, opcode=%d\n", status, opcode); // Debugging statement
 	if (opcode == LOCK)
 		lock_handler(status);
 	else if (opcode == UNLOCK)
