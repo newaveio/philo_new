@@ -20,3 +20,20 @@ void ft_usleep(long milli_sec)
     }
 }
 
+void    clean_exit(t_data *data)
+{
+    int i;
+    t_philo *philo;
+
+    i = 0;
+    while(i < data->philo_num)
+    {
+        philo = data->philos + i;
+        safe_mutex(&philo->philo_mutex, DESTROY);
+        i++;
+    }
+    safe_mutex(&data->data_mutex, DESTROY);
+    safe_mutex(&data->write_mutex, DESTROY);
+    free(data->forks);
+    free(data->philos);
+}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mathieu <mathieu@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:00:37 by mbest             #+#    #+#             */
-/*   Updated: 2024/08/19 18:24:39 by mathieu          ###   ########.fr       */
+/*   Updated: 2024/09/04 18:46:37 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 # define CYA "\033[1;36m" /* BOLD CYAN */
 # define GRY "\033[1;90m" /* BOLD GREY */
 
-# define DEBUG true
+# define DEBUG false
 
 typedef pthread_mutex_t	t_mtx;
 typedef struct s_data	t_data;
@@ -109,6 +109,7 @@ typedef struct s_data
 	pthread_t			monitor;
 	t_mtx				data_mutex;
 	t_mtx				write_mutex; // change to write lock
+	// t_mtx				philos_all_full;
 	t_list				*free_list;
 }						t_data;
 
@@ -156,6 +157,7 @@ int     				is_sim_finished(t_data *data);
 /* utils_2.c */
 long					gettime(void);
 void					ft_usleep(long usec);
+void					clean_exit(t_data *data);
 
 
 // /* checking.c */

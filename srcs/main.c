@@ -21,6 +21,7 @@ int main(int ac, char **av)
         start_simulation(&data);
 
         // clean
+        clean_exit(&data);
     }
     else
     {

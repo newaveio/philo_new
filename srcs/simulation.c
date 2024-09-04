@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mathieu <mathieu@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 18:52:09 by mbest             #+#    #+#             */
-/*   Updated: 2024/08/19 23:02:02 by mathieu          ###   ########.fr       */
+/*   Updated: 2024/09/04 19:00:23 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,6 @@ void    thinking(t_philo *philo)
 
 void    eat(t_philo *philo)
 {
-    // if (philo->id % 2 == 0)
-    //     ft_usleep(100);
     safe_mutex(&philo->first_fork->fork, LOCK);
     write_status(philo, TAKE_FIRST_FORK, DEBUG);
     safe_mutex(&philo->second_fork->fork, LOCK);
@@ -106,7 +104,6 @@ void    eat(t_philo *philo)
     
     // Protected the incrementation in a thread safe maner
     increase_long(&philo->philo_mutex, &philo->meals_eaten); // BETTER THIS WAY
-    // philo->meals_eaten++;
 
     write_status(philo, EATING, DEBUG);
     ft_usleep(philo->data->time_to_eat);
@@ -122,27 +119,18 @@ void    *dinner_simulation(void *args)
 
     philo = (t_philo *)args;
     wait_for_threads(philo->data); // SPINLOCK
-    
-    // Set last meal time
     set_long(&philo->philo_mutex, &philo->last_meal, gettime());
-
     increase_long(&philo->data->data_mutex, &philo->data->threads_running);
     
     // if (philo->id % 2 == 0)
     //     ft_usleep(100);
     while(!is_sim_finished(philo->data))
     {
-        // Am i full ?
         if (philo->full)
             break; // find something else then BREAK
-        
-        // eat
         eat(philo);
-
-        //sleep
+        write_status(philo, SLEEPING, DEBUG);
         ft_usleep(philo->data->time_to_sleep);
-
-        //think
         thinking(philo);
     }
     return (NULL);
@@ -195,4 +183,6 @@ void    start_simulation(t_data *data)
         safe_thread(&data->philos[i].thread_id, NULL, NULL, JOIN);
         i++;
     }
+    set_int(&data->data_mutex, &data->end_simulation, 1);
+    safe_thread(&data->monitor, NULL, NULL, JOIN);
 }

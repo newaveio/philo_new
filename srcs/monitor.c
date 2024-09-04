@@ -11,7 +11,9 @@ int philo_is_dead(t_philo *philo)
     time_to_die = philo->data->time_to_die;
 
     if (elapsed > time_to_die)
+    {
         return (1);
+    }
     else
         return (0);
 }
@@ -33,13 +35,11 @@ void *monitor_routine(void *args)
         {
             if (philo_is_dead(data->philos + i))
             {
-                set_int(&data->data_mutex, &data->end_simulation, 1);
                 write_status(data->philos + i, DIED, DEBUG);
+                set_int(&data->data_mutex, &data->end_simulation, 1);
             }
             i++;
         }
     }    
-
-
     return (NULL);
 }
