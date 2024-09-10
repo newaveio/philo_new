@@ -30,8 +30,6 @@ void safe_thread(pthread_t *thread, void *(*foo)(void *), void *args, t_opcode o
         thread_err_handler(pthread_create(thread, NULL, foo, args), opcode);
     else if (opcode == JOIN)
         thread_err_handler(pthread_join(*thread, NULL), opcode);
-    else if (opcode == DETACH)
-        thread_err_handler(pthread_detach(*thread), opcode);
     else
         err_exit("Wrong opcode for safe_thread().");
 }

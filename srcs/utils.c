@@ -1,5 +1,6 @@
 #include "philo.h"
 
+// ADD CLEANING FUNCTION IN HERE
 void    err_exit(char *msg)
 {
     printf(RED"%s\n"RST, msg);

@@ -3,8 +3,11 @@
 int main(int ac, char **av)
 {
     (void)av;
+    // (void)ac;
     t_data data;
-
+    // (void)data;
+    // return (0);
+    
     if (ac == 5 || ac == 6)
     {
         // parse the input
@@ -15,13 +18,12 @@ int main(int ac, char **av)
 
         // init data and philos
         init_data(&data);
-        // printf("Initialisation finished\n");
 
         // simulation
         start_simulation(&data);
 
         // clean
-        clean_exit(&data);
+        // clean_exit(&data);
     }
     else
     {

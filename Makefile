@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mathieu <mathieu@student.42.fr>            +#+  +:+       +#+         #
+#    By: mbest <mbest@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/11 15:33:52 by mbest             #+#    #+#              #
-#    Updated: 2024/08/19 18:19:35 by mathieu          ###   ########.fr        #
+#    Updated: 2024/09/10 17:02:50 by mbest            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,7 +60,7 @@ NAME = philo
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -pthread -g
+CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread
 
 TOTAL_FILES := $(words $(SRCS))
 
@@ -82,7 +82,7 @@ $(OBJ_DIR)%.o : $(SRC_DIR)%.c srcs/philo.h
 all: $(NAME)
 
 $(NAME): $(OBJS) srcs/philo.h
-	@$(CC) -o $(NAME) $(OBJS)
+	@$(CC) -o $(NAME) $(OBJS) $(CFLAGS)
 	@echo "⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ ✅$(BOLD) Philo successfully built!$(END)\n"
 	@printf "\e[?25h"
 

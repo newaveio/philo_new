@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 18:52:09 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/04 19:00:23 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/10 18:53:07 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,11 +121,12 @@ void    *dinner_simulation(void *args)
     wait_for_threads(philo->data); // SPINLOCK
     set_long(&philo->philo_mutex, &philo->last_meal, gettime());
     increase_long(&philo->data->data_mutex, &philo->data->threads_running);
-    
-    // if (philo->id % 2 == 0)
-    //     ft_usleep(100);
+    // printf("Hello boss\n"); 
+    if (philo->id % 2 == 0)
+        ft_usleep(100);
     while(!is_sim_finished(philo->data))
     {
+        // ft_usleep(10);
         if (philo->full)
             break; // find something else then BREAK
         eat(philo);
