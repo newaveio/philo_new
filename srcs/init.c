@@ -17,6 +17,21 @@ static void	fork_assignement(t_philo *philo, t_fork *forks, int philo_position)
     }
 }
 
+// static void fork_assignement(t_philo *philo, t_fork *forks, int philo_position)
+// {
+//     int philo_nbr;
+
+//     philo_nbr = philo->data->philo_num;
+//     philo->first_fork = &forks[philo_position];
+//     if (philo_position == philo_nbr - 1)
+//     {
+//         philo->second_fork = &forks[0];
+//     }
+//     else
+//     {
+//         philo->second_fork = &forks[philo_position + 1];
+//     }
+// }
 
 static void	philo_init(t_data *data)
 {

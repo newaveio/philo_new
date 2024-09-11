@@ -2,28 +2,30 @@
 
 int main(int ac, char **av)
 {
-    (void)av;
+    // (void)av;
     // (void)ac;
     t_data data;
     // (void)data;
     // return (0);
     
+    printf("Hello 1");
     if (ac == 5 || ac == 6)
     {
-        // parse the input
+    //     printf("fsdjbfsalf");
+    //     // parse the input
         parsing(&data, av);
-        // printf("Parsing finished\n");
-        // usleep(data.time_to_eat);
-        // return (0);
+    //     // printf("Parsing finished\n");
+    //     // usleep(data.time_to_eat);
+    //     // return (0);
 
-        // init data and philos
+    //     // init data and philos
         init_data(&data);
 
-        // simulation
+    //     // simulation
         start_simulation(&data);
 
-        // clean
-        // clean_exit(&data);
+    //     // clean
+        clean_exit(&data);
     }
     else
     {

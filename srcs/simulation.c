@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 18:52:09 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/10 18:53:07 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/11 20:35:47 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,7 @@ void    start_simulation(t_data *data)
     int i;
 
     i = 0;
+    printf("Hello 2");
     if (data->num_meals_limit == 0)
         return; 
     else if (data->philo_num == 1)

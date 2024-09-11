@@ -1,3 +1,7 @@
 {
-    "makefile.configureOnOpen": true
+    "makefile.configureOnOpen": true,
+    "files.associations": {
+        "philo_new.h": "c",
+        "limits.h": "c"
+    }
 }
