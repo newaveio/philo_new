@@ -1,6 +1,6 @@
 #include "philo_new.h"
 
-static void fork_assignement(t_philo *philo, t_fork *forks, int philo_position)
+static void fork_assignement(t_philo *philo, t_mtx *forks, int philo_position)
 {
     int philo_nbr;
 
@@ -19,7 +19,6 @@ static void fork_assignement(t_philo *philo, t_fork *forks, int philo_position)
 static void philo_init(t_data *data)
 {
     int i;
-    // int ret;
     t_philo *philo;
 
     i = 0;
@@ -30,6 +29,7 @@ static void philo_init(t_data *data)
         philo->full = 0;
         philo->meals_eaten = 0;
         philo->data = data;
+        safe_mutex(&philo->philo_mutex, INIT);
         fork_assignement(philo, data->forks, i);
         i++;
     }
@@ -38,26 +38,17 @@ static void philo_init(t_data *data)
 void    init_data(t_data *data)
 {
     int i;
-    int ret;
 
     i = 0;
     data->free_list = NULL;
+    data->threads_ready = 0;
     data->philos = (t_philo *)safe_malloc((sizeof(t_philo) * data->num_philos), data);
-    data->forks = (t_fork *)safe_malloc((sizeof(t_fork) * data->num_philos), data);
-    while (i < data->num_philos)
+    while(i < data->num_philos)
     {
-        ret = pthread_mutex_init(&data->forks[i].fork, NULL);
-        if (ret != 0)
-        {
-            exit_cleanly(data);
-        }
-        data->forks[i].id = i + 1;
+        safe_mutex(&data->forks[i], INIT);
         i++;
     }
-    ret = pthread_mutex_init(&data->start_mutex, NULL);
-    if (ret != 0)
-    {
-        exit_cleanly(data);
-    }
+    safe_mutex(&data->data_mutex, INIT);
+    safe_mutex(&data->write_mutex, INIT);
     philo_init(data);
 }

@@ -75,9 +75,9 @@ void	parsing(t_data *data, char **av)
 		data->number_of_meals = ft_atol(av[5]);
 	else
 		data->number_of_meals = -1;
-	printf("Number of philos = %ld\n", data->num_philos);
-	printf("Time to die = %ld\n", data->time_to_die);
-	printf("Time to eat = %ld\n", data->time_to_eat);
-	printf("Time to sleep = %ld\n", data->time_to_sleep);
-	printf("Number of meals to eat = %ld\n", data->number_of_meals);
+	// printf("Number of philos = %ld\n", data->num_philos);
+	// printf("Time to die = %ld\n", data->time_to_die);
+	// printf("Time to eat = %ld\n", data->time_to_eat);
+	// printf("Time to sleep = %ld\n", data->time_to_sleep);
+	// printf("Number of meals to eat = %ld\n", data->number_of_meals);
 }

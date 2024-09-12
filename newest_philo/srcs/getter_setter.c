@@ -33,3 +33,5 @@ long    get_long(t_mtx *mutex, long *value)
     safe_mutex(mutex, UNLOCK);
     return (ret);
 }
+
+

@@ -6,7 +6,7 @@
 #    By: mbest <mbest@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/11 15:33:52 by mbest             #+#    #+#              #
-#    Updated: 2024/09/11 19:02:58 by mbest            ###   ########.fr        #
+#    Updated: 2024/09/12 14:12:26 by mbest            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,9 @@ _SALMON = \033[38;5;209m
 SRC_DIR = srcs/
 OBJ_DIR = objs/
 
-FILES = clean.c init.c list_functions.c main.c parsing.c safe_functions.c simulation.c utils.c 
+FILES = clean.c getter_setter.c init.c list_functions.c main.c parsing.c \
+		safe_functions.c simulation.c utils.c mut_functions.c th_functions.c \
+		sync.c 
 
 
 

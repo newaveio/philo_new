@@ -44,19 +44,11 @@ typedef enum e_opcode
 	DETACH,
 }						t_opcode;
 
-
-
 typedef struct s_list
 {
 	void				*content;
 	struct s_list		*next;
 }						t_list;
-
-typedef struct s_fork
-{
-	int					id;
-	t_mtx				fork;
-}						t_fork;
 
 typedef struct s_philo
 {
@@ -64,10 +56,12 @@ typedef struct s_philo
 	int					full;
 	long				meals_eaten;
 	long				last_meal;
-    t_fork              *first_fork;
-    t_fork              *second_fork;
+	t_mtx				philo_mutex;
+	t_mtx				*write_lock;
+	t_mtx				*first_fork;
+	t_mtx				*second_fork;
 	pthread_t			th_id;
-    t_data              *data;
+	t_data				*data;
 
 }						t_philo;
 
@@ -78,30 +72,36 @@ typedef struct s_data
 	long				time_to_eat;
 	long				time_to_sleep;
 	long				number_of_meals;
-    t_mtx               start_mutex;
-    int                 threads_ready;
+	long				start_time;
+	int					threads_ready;
+	t_mtx				data_mutex;
+	t_mtx				write_mutex;
 	t_philo				*philos;
-	t_fork				*forks;
+	t_mtx				*forks;
 	t_list				*free_list;
 }						t_data;
 
+void					wait_for_threads(t_data *data);
+void					*philo_routine(void *arg);
 
 /* getter_setter.c */
-void    set_int(t_mtx *mutex, int *dest, int value, t_data *data);
+void					set_int(t_mtx *mutex, int *dest, int value);
+int						get_int(t_mtx *mutex, int *value);
+void					set_long(t_mtx *mutex, long *dest, long value);
+long					get_long(t_mtx *mutex, long *value);
 
+/* th_functions.c */
+void					thread_err_handler(int status, t_opcode opcode);
 
+/* mut_functions.c */
+void					mutex_err_handler(int status, t_opcode opcode);
 
 /* utils.c */
 void					err_exit(char *msg);
 void					*ft_calloc(size_t nmemb, size_t size);
 void					ft_bzero(void *s, size_t n);
-
-/* list_functions.c */
-
-t_list					*ft_lstnew(void *content);
-void					ft_lstadd_back(t_list **lst, t_list *new);
-void					ft_lstclear(t_list **lst, void (*del)(void *));
-void					ft_lstdelone(t_list *lst, void (*del)(void *));
+long					gettime(void);
+void					ft_usleep(long milli_sec);
 
 /* init.c */
 void					init_data(t_data *data);
@@ -115,5 +115,19 @@ void					add_to_free_list(t_data *data, void *ptr);
 
 /* safe_functions.c */
 void					*safe_malloc(size_t bytes, t_data *data);
+void					safe_mutex(t_mtx *mutex, t_opcode opcode);
+void					safe_thread(pthread_t *thread, void *(*foo)(void *),
+							void *args, t_opcode);
+
+/* simulation.c */
+void					start_simulation(t_data *data);
+void					mutex_err_handler(int status, t_opcode opcode);
+void					thread_err_handler(int status, t_opcode opcode);
+
+/* list_functions.c */
+t_list					*ft_lstnew(void *content);
+void					ft_lstadd_back(t_list **lst, t_list *new);
+void					ft_lstclear(t_list **lst, void (*del)(void *));
+void					ft_lstdelone(t_list *lst, void (*del)(void *));
 
 #endif
