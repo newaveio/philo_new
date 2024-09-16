@@ -23,7 +23,10 @@ void    eat(t_philo *philo)
         philo->meals++;
     }
     if (philo->meals == philo->data->number_of_meals)
+    {
+        increase_long(&philo->data->p_f_mutex, &philo->data->philo_finished);
         philo->full = 1;
+    }
     ft_usleep(philo->data->time_to_eat);
     safe_mutex(&philo->first_fork, UNLOCK);
     safe_mutex(philo->second_fork, UNLOCK);
@@ -42,14 +45,27 @@ void    think(t_philo *philo)
 
 void    iam_full(t_philo *philo)
 {
-    increase_long(philo->philo_finished_mut, &philo->data->philo_finished);
+    increase_long(&philo->data->philo_full_mut, &philo->data->philo_full);
 }
+
+void    wait_for_all_threads(t_data *data)
+{
+    while(!get_int(&data->ready_mutex, &data->all_threads_ready))
+    {
+        usleep(100);
+    }
+}
+
 void    *philo_routine(void *arg)
 {
     t_philo *philo;
 
     philo = (t_philo *)arg;
+
+
+    wait_for_all_threads(philo->data);
     set_long(&philo->last_meal_mutex, &philo->last_meal, get_long(&philo->data->start_mutex, &philo->data->start_time));
+    // printf("last meal for philo %d is %ld\n", philo->id, philo->last_meal);
     if (philo->id % 2 == 0)
         ft_usleep(100);
 
@@ -60,14 +76,8 @@ void    *philo_routine(void *arg)
             iam_full(philo);
             break;
         }
-
-        // EATING
         eat(philo);
-
-        // SLEEPING
         sleep_philo(philo);
-
-        // THINKING
         think(philo);
     }
     return (NULL);
@@ -81,14 +91,18 @@ void    *monitor_routine(void *args)
     t_data *data;
 
     data = (t_data *)args;
+    usleep(100);
     while(!is_simulation_finished(data))
     {
         i = 0;
         while (i < data->number_of_philos)
         {
+            // if (get_int(&data->philos[i].full_mutex, &data->philos[i].full))
+            //     return (NULL);
             current_time = gettime();
             last_meal_time = get_long(&data->philos[i].last_meal_mutex, &data->philos[i].last_meal);
-            // printf("Time since last meal: %ld\n", current_time - last_meal_time);
+            // printf("[%d] current_time = %ld - last_meal = %ld\n", data->philos[i].id, current_time, last_meal_time);
+            // printf("[%d] Time since last meal: %ld\n", data->philos[i].id, current_time - last_meal_time);
             if (current_time - last_meal_time > data->time_to_die)
             {
                 set_int(&data->end_mutex, &data->end, 1);
@@ -115,14 +129,13 @@ void    start_simulation(t_data *data)
     }
     else
     {
-        // printf("data->end = %d\n", data->end);
-        set_long(&data->start_mutex, &data->start_time, gettime());
         while(i < data->number_of_philos)
         {
             safe_thread(&data->philos[i].thread_id, philo_routine, &data->philos[i], CREATE);
             i++;
         }
-        // data->start_time = gettime();
+        set_long(&data->start_mutex, &data->start_time, gettime());
+        set_int(&data->ready_mutex, &data->all_threads_ready, 1);
         safe_thread(&data->monitor, monitor_routine, data, CREATE);
         i = 0;
         while(i < data->number_of_philos)

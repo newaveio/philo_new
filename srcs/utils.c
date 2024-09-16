@@ -2,9 +2,11 @@
 
 int is_simulation_finished(t_data *data)
 {
+    int i;
     long all_full;
     int finished;
 
+    i = 0;
     all_full = get_long(&data->p_f_mutex, &data->philo_finished);
     finished = get_int(&data->end_mutex, &data->end);
     // printf("all full = %ld\nfinished = %d\n", all_full, finished);
@@ -14,9 +16,13 @@ int is_simulation_finished(t_data *data)
         // printf("all_full = %ld\nfinished = %d\n", all_full, finished);
         return (1);
     }
-    else
-        return (0);
-    // return(get_int(&data->end_mutex, &data->end));
+    while (i < data->number_of_philos)
+    {
+        if (!get_int(&data->philos[i].full_mutex, &data->philos[i].full))
+            return (0);
+        i++;
+    }
+    return (1);
 }
 
 void    write_status_debug(t_philo_status status, t_philo *philo, long time)
@@ -39,11 +45,9 @@ void    write_status(t_philo *philo, t_mtx *mutex, t_philo_status status, bool d
 {
     long time;
 
+    // if (philo->full)
+    //     return;
     time = gettime() - philo->data->start_time;
-    // if philo full return
-    // check that no philo died before -> can put this in the if OCEANO
-
-    // lock the writing mutex that they all share
     if (debug)
         write_status_debug(status, philo, time);
     else
