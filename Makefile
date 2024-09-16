@@ -6,7 +6,7 @@
 #    By: mathieu <mathieu@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/11 15:33:52 by mbest             #+#    #+#              #
-#    Updated: 2024/09/12 15:42:39 by mathieu          ###   ########.fr        #
+#    Updated: 2024/09/14 16:44:23 by mathieu          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,17 +39,14 @@ _SALMON = \033[38;5;209m
 SRC_DIR = srcs/
 OBJ_DIR = objs/
 
-FILES = init.c \
+FILES = getter_setter.c \
+		init.c \
 		main.c \
-		mutex_functions.c \
-		monitor.c \
-		parsing.c \
 		safe_functions.c \
 		simulation.c \
-		synchro.c \
-		thread_functions.c \
-		utils.c \
-		utils2.c
+		parsing.c \
+		time_functions.c \
+		utils.c
 
 H_FILES = philo.h
 
@@ -60,7 +57,8 @@ NAME = philo
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -pthread
+# -fsanitize=thread ADD THIS FOR HELP IN DEBUGGING
 
 TOTAL_FILES := $(words $(SRCS))
 
