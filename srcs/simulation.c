@@ -49,11 +49,10 @@ void    *philo_routine(void *arg)
     t_philo *philo;
 
     philo = (t_philo *)arg;
-    philo->last_meal = philo->data->start_time;
-    // printf("Last meal of philo %d is %ld\n", philo->id, philo->last_meal);
+    set_long(&philo->last_meal_mutex, &philo->last_meal, get_long(&philo->data->start_mutex, &philo->data->start_time));
     if (philo->id % 2 == 0)
         ft_usleep(100);
-    // printf("[Philo %d] Starting the routine\n", philo->id);
+
     while(!is_simulation_finished(philo->data))
     {
         if(philo->full)
@@ -94,7 +93,7 @@ void    *monitor_routine(void *args)
             {
                 set_int(&data->end_mutex, &data->end, 1);
                 write_status(&data->philos[i], &data->write_lock, DIED, DEBUG);
-                exit(42); //! Change this to a break to clean the program
+                return (NULL);
             }
             i++;
         }
@@ -111,18 +110,19 @@ void    start_simulation(t_data *data)
     if (data->number_of_meals == 0) 
         return ; //! We are finished
     else if (data->number_of_philos == 1) { //! DO LATER
-        printf("SPECIAL CASE - DO LATER\n");
+        // printf("SPECIAL CASE - DO LATER\n");
         return ;
     }
     else
     {
         // printf("data->end = %d\n", data->end);
+        set_long(&data->start_mutex, &data->start_time, gettime());
         while(i < data->number_of_philos)
         {
             safe_thread(&data->philos[i].thread_id, philo_routine, &data->philos[i], CREATE);
             i++;
         }
-        data->start_time = gettime();
+        // data->start_time = gettime();
         safe_thread(&data->monitor, monitor_routine, data, CREATE);
         i = 0;
         while(i < data->number_of_philos)

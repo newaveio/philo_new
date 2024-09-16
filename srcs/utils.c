@@ -2,14 +2,18 @@
 
 int is_simulation_finished(t_data *data)
 {
-    int all_full;
+    long all_full;
     int finished;
 
     all_full = get_long(&data->p_f_mutex, &data->philo_finished);
     finished = get_int(&data->end_mutex, &data->end);
+    // printf("all full = %ld\nfinished = %d\n", all_full, finished);
 
     if (all_full == data->number_of_philos || finished)
+    {
+        // printf("all_full = %ld\nfinished = %d\n", all_full, finished);
         return (1);
+    }
     else
         return (0);
     // return(get_int(&data->end_mutex, &data->end));
@@ -45,13 +49,13 @@ void    write_status(t_philo *philo, t_mtx *mutex, t_philo_status status, bool d
     else
     {
         safe_mutex(mutex, LOCK);
-        if((status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK))
+        if((status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK) && !is_simulation_finished(philo->data))
             printf("%-6ld %d has taken a fork\n", time, philo->id);
-        else if (status == EATING)
+        else if (status == EATING  && !is_simulation_finished(philo->data))
             printf("%-6ld %d is eating\n", time, philo->id);
-        else if (status == SLEEPING)
+        else if (status == SLEEPING  && !is_simulation_finished(philo->data))
             printf("%-6ld %d is sleeping\n", time, philo->id);
-        else if (status == THINKING)
+        else if (status == THINKING  && !is_simulation_finished(philo->data))
             printf("%-6ld %d is thinking\n", time, philo->id);
         else if (status == DIED)
             printf("%-6ld %d died\n", time, philo->id);

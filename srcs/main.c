@@ -45,6 +45,21 @@ void    print_data(t_data *data)
     printf("Data -> end: %d\n", data->end);
 }
 
+void    exit_cleanly(t_data *data)
+{
+    int i;
+
+    i = 0;
+    while(i < data->number_of_philos)
+    {
+        safe_mutex(&data->philos[i].first_fork, DESTROY);
+        i++;
+    }
+    safe_mutex(&data->p_f_mutex, DESTROY);
+    safe_mutex(&data->write_lock, DESTROY);
+    safe_mutex(&data->end_mutex, DESTROY);
+    free(data->philos);
+}
 
 int main(int ac, char **av)
 {
@@ -58,7 +73,8 @@ int main(int ac, char **av)
         // print_data(&data);
         // print_philos(&data);
         start_simulation(&data);
-        printf("END\n");
+        exit_cleanly(&data);
+        // printf("END\n");
     }
     return (0);
 }

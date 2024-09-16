@@ -48,6 +48,7 @@ void    init(t_data *data)
     // pthread_mutex_init(&data->write_lock, NULL);
     // pthread_mutex_init(&data->end_mutex, NULL);
     safe_mutex(&data->p_f_mutex, INIT);
+    safe_mutex(&data->start_mutex, INIT);
     init_philos(data);
     assign_second_fork(data);
 }

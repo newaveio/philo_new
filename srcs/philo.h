@@ -53,6 +53,7 @@ typedef struct s_data
     t_mtx       p_f_mutex;
     t_mtx       write_lock;
     t_mtx       end_mutex;
+    t_mtx       start_mutex;
     pthread_t   monitor;
     t_philo   *philos;
 }                   t_data;
