@@ -13,8 +13,6 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-# define DEBUG false
-
 /*
 *** Structures
 */
@@ -28,15 +26,10 @@ typedef struct s_philo
 	int					full;
 	int					meals;
 	long				last_meal;
-	int					finished;
-	int					philos_finished;
 	pthread_t			thread_id;
-	t_mtx				full_mutex;
 	t_mtx				first_fork;
 	t_mtx				*second_fork;
-	t_mtx				*write_mutex;
-	t_mtx				*philo_finished_mut;
-	t_mtx				last_meal_mutex;
+	t_mtx				full_mutex;
 	t_data				*data;
 }						t_philo;
 
@@ -48,17 +41,12 @@ typedef struct s_data
 	long				time_to_sleep;
 	long				number_of_meals;
 	long				start_time;
-	int					end;
-	int					all_threads_ready;
-	long				philo_finished;
-	long				philo_full;
-	t_mtx				philo_full_mut;
-	t_mtx				p_f_mutex;
+	int					died;
+	int					all_ate;
+	int					all_threads_ready; //! Use for sync when lots of philos
 	t_mtx				write_lock;
-	t_mtx				end_mutex;
-	t_mtx				start_mutex;
-	t_mtx				ready_mutex;
-	pthread_t			monitor;
+	t_mtx				dead_lock;
+	t_mtx				meal_check;
 	t_philo				*philos;
 }						t_data;
 
@@ -86,8 +74,10 @@ typedef enum s_philo_status
 *** Prototypes
 */
 
-void					print_philos(t_data *data);
-void					print_data(t_data *data);
+void	exit_cleanly(t_data *data);
+
+// void					print_philos(t_data *data);
+// void					print_data(t_data *data);
 
 /* getter_setter.c */
 void					set_long(t_mtx *mutex, long *dest, long value);
@@ -115,8 +105,8 @@ void					start_simulation(t_data *data);
 long					ft_atol(char *str);
 void					err_exit(char *str);
 void					write_status(t_philo *philo, t_mtx *mutex,
-							t_philo_status status, bool debug);
-int						is_simulation_finished(t_data *data);
+							t_philo_status status);
+// int						is_simulation_finished(t_data *data);
 
 /* time_functions.c */
 void					ft_usleep(long time_in_ms);

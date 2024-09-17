@@ -5,144 +5,147 @@ void    eat(t_philo *philo)
     if (philo->id % 2 == 0)
     {
         safe_mutex(philo->second_fork, LOCK);
-        write_status(philo, philo->write_mutex, TAKE_SECOND_FORK, DEBUG);
+        write_status(philo, &philo->data->write_lock, TAKE_SECOND_FORK);
         safe_mutex(&philo->first_fork, LOCK);
-        write_status(philo, philo->write_mutex, TAKE_FIRST_FORK, DEBUG);
-        set_long(&philo->last_meal_mutex, &philo->last_meal, gettime());
-        write_status(philo, philo->write_mutex, EATING, DEBUG);
-        philo->meals++;
+        write_status(philo, &philo->data->write_lock, TAKE_FIRST_FORK);
+        write_status(philo, &philo->data->write_lock, EATING);
+        set_long(&philo->data->meal_check, &philo->last_meal, gettime());
     }
     else
     {
         safe_mutex(&philo->first_fork, LOCK);
-        write_status(philo, philo->write_mutex, TAKE_FIRST_FORK, DEBUG);
+        write_status(philo, &philo->data->write_lock, TAKE_FIRST_FORK);
         safe_mutex(philo->second_fork, LOCK);
-        write_status(philo, philo->write_mutex, TAKE_SECOND_FORK, DEBUG);
-        set_long(&philo->last_meal_mutex, &philo->last_meal, gettime());
-        write_status(philo, philo->write_mutex, EATING, DEBUG);
-        philo->meals++;
-    }
-    if (philo->meals == philo->data->number_of_meals)
-    {
-        increase_long(&philo->data->p_f_mutex, &philo->data->philo_finished);
-        philo->full = 1;
+        write_status(philo, &philo->data->write_lock, TAKE_SECOND_FORK);
+        write_status(philo, &philo->data->write_lock, EATING);
+        set_long(&philo->data->meal_check, &philo->last_meal, gettime());
     }
     ft_usleep(philo->data->time_to_eat);
+    philo->meals++;
+    // printf("Meals = %d\n", philo->meals);
+    // printf("Philo full = %d\n", philo->full);
+    if (philo->meals == philo->data->number_of_meals)
+        set_int(&philo->full_mutex, &philo->full, 1);
     safe_mutex(&philo->first_fork, UNLOCK);
     safe_mutex(philo->second_fork, UNLOCK);
 }
 
 void    sleep_philo(t_philo *philo)
 {
-    write_status(philo, philo->write_mutex, SLEEPING, DEBUG);
+    write_status(philo, &philo->data->write_lock, SLEEPING);
     ft_usleep(philo->data->time_to_sleep);
 }
 
 void    think(t_philo *philo)
 {
-    write_status(philo, philo->write_mutex, THINKING, DEBUG);
+    write_status(philo, &philo->data->write_lock, THINKING);
 }
 
-void    iam_full(t_philo *philo)
-{
-    increase_long(&philo->data->philo_full_mut, &philo->data->philo_full);
-}
-
-void    wait_for_all_threads(t_data *data)
-{
-    while(!get_int(&data->ready_mutex, &data->all_threads_ready))
-    {
-        usleep(100);
-    }
-}
+// void    wait_for_all_threads(t_data *data)
+// {
+//     while(!get_int(&data->ready_mutex, &data->all_threads_ready))
+//     {
+//         usleep(100);
+//     }
+// }
 
 void    *philo_routine(void *arg)
 {
     t_philo *philo;
+    t_data *data;
 
     philo = (t_philo *)arg;
-
-
-    wait_for_all_threads(philo->data);
-    set_long(&philo->last_meal_mutex, &philo->last_meal, get_long(&philo->data->start_mutex, &philo->data->start_time));
-    // printf("last meal for philo %d is %ld\n", philo->id, philo->last_meal);
-    if (philo->id % 2 == 0)
-        ft_usleep(100);
-
-    while(!is_simulation_finished(philo->data))
+    data = philo->data;
+    if (philo->id % 2)
+        usleep(800);
+    while(!data->died)
     {
-        if(philo->full)
-        {
-            iam_full(philo);
-            break;
-        }
         eat(philo);
         sleep_philo(philo);
         think(philo);
+        if (get_int(&philo->full_mutex, &philo->full))
+            break;
     }
     return (NULL);
 }
 
-void    *monitor_routine(void *args)
+void    death_checker(t_data *data)
 {
     int i;
-    long current_time;
-    long last_meal_time;
-    t_data *data;
 
-    data = (t_data *)args;
-    usleep(100);
-    while(!is_simulation_finished(data))
+    while (data->all_ate == 0)
     {
         i = 0;
-        while (i < data->number_of_philos)
+        while(i < data->number_of_philos && !data->died)
         {
-            // if (get_int(&data->philos[i].full_mutex, &data->philos[i].full))
-            //     return (NULL);
-            current_time = gettime();
-            last_meal_time = get_long(&data->philos[i].last_meal_mutex, &data->philos[i].last_meal);
-            // printf("[%d] current_time = %ld - last_meal = %ld\n", data->philos[i].id, current_time, last_meal_time);
-            // printf("[%d] Time since last meal: %ld\n", data->philos[i].id, current_time - last_meal_time);
-            if (current_time - last_meal_time > data->time_to_die)
+            safe_mutex(&data->meal_check, LOCK);
+            if (!get_int(&data->philos[i].full_mutex, &data->philos[i].full) && gettime() - data->philos[i].last_meal > data->time_to_die)
             {
-                set_int(&data->end_mutex, &data->end, 1);
-                write_status(&data->philos[i], &data->write_lock, DIED, DEBUG);
-                return (NULL);
+                write_status(&data->philos[i], &data->write_lock, DIED);
+                set_int(&data->dead_lock, &data->died, 1);
             }
+            safe_mutex(&data->meal_check, UNLOCK);
+            usleep(100);
             i++;
         }
-        usleep(100);
+        if (get_int(&data->dead_lock, &data->died))
+            break;
+        i = 0;
+        if (data->number_of_meals != -1)
+        {
+            while(i < data->number_of_philos && get_int(&data->philos[i].full_mutex, &data->philos[i].full))
+                i++;
+            if (i == data->number_of_philos)
+                data->all_ate = 1;
+        }
     }
-    return (NULL);
+}
+
+void exit_sim(t_data *data)
+{
+    int i;
+    
+    i = 0;
+    while (i < data->number_of_philos)
+    {
+        safe_thread(&data->philos[i].thread_id, NULL, NULL, JOIN);
+        i++;
+    }
+}
+
+void    exit_cleanly(t_data *data)
+{
+    int i;
+
+    i = 0;
+    while(i < data->number_of_philos)
+    {
+        safe_mutex(&data->philos[i].first_fork, DESTROY);
+        safe_mutex(&data->philos[i].full_mutex, DESTROY);
+        i++;
+    }
+    safe_mutex(&data->write_lock, DESTROY);
+    safe_mutex(&data->dead_lock, DESTROY);
+    safe_mutex(&data->meal_check, DESTROY);
+    free(data->philos);
 }
 
 void    start_simulation(t_data *data)
 {
     int i;
+    t_philo *phi;
 
     i = 0;
-    if (data->number_of_meals == 0) 
-        return ; //! We are finished
-    else if (data->number_of_philos == 1) { //! DO LATER
-        // printf("SPECIAL CASE - DO LATER\n");
-        return ;
-    }
-    else
+    phi = data->philos;
+    data->start_time = gettime();
+    while(i < data->number_of_philos)
     {
-        while(i < data->number_of_philos)
-        {
-            safe_thread(&data->philos[i].thread_id, philo_routine, &data->philos[i], CREATE);
-            i++;
-        }
-        set_long(&data->start_mutex, &data->start_time, gettime());
-        set_int(&data->ready_mutex, &data->all_threads_ready, 1);
-        safe_thread(&data->monitor, monitor_routine, data, CREATE);
-        i = 0;
-        while(i < data->number_of_philos)
-        {
-            safe_thread(&data->philos[i].thread_id, NULL, NULL, JOIN);
-            i++;
-        }
-        safe_thread(&data->monitor, NULL, NULL, JOIN);
+        safe_thread(&phi[i].thread_id, philo_routine, &phi[i], CREATE);
+        phi[i].last_meal = gettime();
+        i++;
     }
+    death_checker(data);
+    exit_sim(data);
+    exit_cleanly(data);
 }
+
