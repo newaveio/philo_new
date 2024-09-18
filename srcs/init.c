@@ -43,6 +43,7 @@ void	init(t_data *data)
 	safe_mutex(&data->write_lock, INIT);
 	safe_mutex(&data->meal_check, INIT);
 	safe_mutex(&data->dead_lock, INIT);
+	safe_mutex(&data->ready_lock, INIT);
 	init_philos(data);
 	assign_second_fork(data);
 }

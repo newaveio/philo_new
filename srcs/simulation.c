@@ -10,6 +10,12 @@ void    eat(t_philo *philo)
         write_status(philo, &philo->data->write_lock, TAKE_FIRST_FORK);
         write_status(philo, &philo->data->write_lock, EATING);
         set_long(&philo->data->meal_check, &philo->last_meal, gettime());
+        ft_usleep(philo->data->time_to_eat);
+        philo->meals++;
+        if (philo->meals == philo->data->number_of_meals)
+            set_int(&philo->full_mutex, &philo->full, 1);
+        safe_mutex(philo->second_fork, UNLOCK);
+        safe_mutex(&philo->first_fork, UNLOCK);
     }
     else
     {
@@ -19,13 +25,23 @@ void    eat(t_philo *philo)
         write_status(philo, &philo->data->write_lock, TAKE_SECOND_FORK);
         write_status(philo, &philo->data->write_lock, EATING);
         set_long(&philo->data->meal_check, &philo->last_meal, gettime());
+        ft_usleep(philo->data->time_to_eat);
+        philo->meals++;
+        if (philo->meals == philo->data->number_of_meals)
+            set_int(&philo->full_mutex, &philo->full, 1);
+        safe_mutex(&philo->first_fork, UNLOCK);
+        safe_mutex(philo->second_fork, UNLOCK);
     }
-    ft_usleep(philo->data->time_to_eat);
-    philo->meals++;
-    if (philo->meals == philo->data->number_of_meals)
-        set_int(&philo->full_mutex, &philo->full, 1);
-    safe_mutex(&philo->first_fork, UNLOCK);
-    safe_mutex(philo->second_fork, UNLOCK);
+    // if (philo->id % 2 == 0)
+    // {
+    //     safe_mutex(philo->second_fork, UNLOCK);
+    //     safe_mutex(&philo->first_fork, UNLOCK);
+    // }
+    // else
+    // {
+    //     safe_mutex(&philo->first_fork, UNLOCK);
+    //     safe_mutex(philo->second_fork, UNLOCK);
+    // }
 }
 
 void    sleep_philo(t_philo *philo)
@@ -37,15 +53,16 @@ void    sleep_philo(t_philo *philo)
 void    think(t_philo *philo)
 {
     write_status(philo, &philo->data->write_lock, THINKING);
+    usleep(100);
 }
 
-// void    wait_for_all_threads(t_data *data)
-// {
-//     while(!get_int(&data->ready_mutex, &data->all_threads_ready))
-//     {
-//         usleep(100);
-//     }
-// }
+void    wait_for_all_threads(t_data *data)
+{
+    while(!get_int(&data->ready_lock, &data->all_threads_ready))
+    {
+        usleep(100);
+    }
+}
 
 void    *philo_routine(void *arg)
 {
@@ -54,6 +71,9 @@ void    *philo_routine(void *arg)
 
     philo = (t_philo *)arg;
     data = philo->data;
+    // wait_for_all_threads(data);
+    // set_long(&data->meal_check, &philo->last_meal, gettime());
+
     if (philo->id % 2)
         usleep(100);
     while(!get_int(&data->dead_lock, &data->died))

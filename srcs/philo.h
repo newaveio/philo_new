@@ -43,7 +43,8 @@ typedef struct s_data
 	long long				start_time;
 	int					died;
 	int					all_ate;
-	int					all_threads_ready; //! Use for sync when lots of philos
+	int					all_threads_ready;
+	t_mtx				ready_lock; //! Use for sync when lots of philos
 	t_mtx				write_lock;
 	t_mtx				dead_lock;
 	t_mtx				meal_check;
