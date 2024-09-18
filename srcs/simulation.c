@@ -137,7 +137,7 @@ void    start_simulation(t_data *data)
     int i;
     t_philo *phi;
 
-    i = 0;
+    i =  0;
     phi = data->philos;
     data->start_time = gettime();
     // printf("time %lld\n", data->start_time);
