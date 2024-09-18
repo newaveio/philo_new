@@ -40,7 +40,7 @@ typedef struct s_data
 	long				time_to_eat;
 	long				time_to_sleep;
 	long				number_of_meals;
-	long				start_time;
+	long long				start_time;
 	int					died;
 	int					all_ate;
 	int					all_threads_ready; //! Use for sync when lots of philos

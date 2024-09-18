@@ -56,9 +56,11 @@ void    *philo_routine(void *arg)
 
     philo = (t_philo *)arg;
     data = philo->data;
+    // set_long(&data->meal_check, &philo->last_meal, gettime());
     if (philo->id % 2)
         usleep(800);
-    while(!data->died)
+    // while(!data->died)
+    while(!get_int(&data->dead_lock, &data->died))
     {
         eat(philo);
         sleep_philo(philo);
@@ -138,10 +140,12 @@ void    start_simulation(t_data *data)
     i = 0;
     phi = data->philos;
     data->start_time = gettime();
+    // printf("time %lld\n", data->start_time);
     while(i < data->number_of_philos)
     {
+        set_long(&data->meal_check, &phi[i].last_meal, gettime());
         safe_thread(&phi[i].thread_id, philo_routine, &phi[i], CREATE);
-        phi[i].last_meal = gettime();
+        // phi[i].last_meal = gettime();
         i++;
     }
     death_checker(data);
