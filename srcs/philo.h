@@ -30,6 +30,7 @@ typedef struct s_philo
 	t_mtx				first_fork;
 	t_mtx				*second_fork;
 	t_mtx				full_mutex;
+	t_mtx				meal_check;
 	t_data				*data;
 }						t_philo;
 
@@ -44,10 +45,12 @@ typedef struct s_data
 	int					died;
 	int					all_ate;
 	int					all_threads_ready;
+	int					min_meals;
 	t_mtx				ready_lock; //! Use for sync when lots of philos
 	t_mtx				write_lock;
 	t_mtx				dead_lock;
 	t_mtx				meal_check;
+	t_mtx				min_meals_mut;
 	t_philo				*philos;
 }						t_data;
 
