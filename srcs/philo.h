@@ -102,7 +102,6 @@ void					safe_mutex(t_mtx *mutex, t_opcode opcode);
 void					start_simulation(t_data *data);
 
 /* utils.c */
-long					ft_atol(char *str);
 void					err_exit(char *str);
 void					write_status(t_philo *philo, t_mtx *mutex,
 							t_philo_status status);

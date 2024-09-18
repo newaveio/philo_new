@@ -22,8 +22,6 @@ void    eat(t_philo *philo)
     }
     ft_usleep(philo->data->time_to_eat);
     philo->meals++;
-    // printf("Meals = %d\n", philo->meals);
-    // printf("Philo full = %d\n", philo->full);
     if (philo->meals == philo->data->number_of_meals)
         set_int(&philo->full_mutex, &philo->full, 1);
     safe_mutex(&philo->first_fork, UNLOCK);
@@ -56,10 +54,8 @@ void    *philo_routine(void *arg)
 
     philo = (t_philo *)arg;
     data = philo->data;
-    // set_long(&data->meal_check, &philo->last_meal, gettime());
     if (philo->id % 2)
-        usleep(800);
-    // while(!data->died)
+        usleep(100);
     while(!get_int(&data->dead_lock, &data->died))
     {
         eat(philo);
@@ -80,14 +76,12 @@ void    death_checker(t_data *data)
         i = 0;
         while(i < data->number_of_philos && !data->died)
         {
-            safe_mutex(&data->meal_check, LOCK);
-            if (!get_int(&data->philos[i].full_mutex, &data->philos[i].full) && gettime() - data->philos[i].last_meal > data->time_to_die)
+            if (!get_int(&data->philos[i].full_mutex, &data->philos[i].full) \
+                && gettime() - get_long(&data->meal_check, &data->philos[i].last_meal) > data->time_to_die)
             {
                 write_status(&data->philos[i], &data->write_lock, DIED);
                 set_int(&data->dead_lock, &data->died, 1);
             }
-            safe_mutex(&data->meal_check, UNLOCK);
-            usleep(100);
             i++;
         }
         if (get_int(&data->dead_lock, &data->died))
@@ -100,6 +94,7 @@ void    death_checker(t_data *data)
             if (i == data->number_of_philos)
                 data->all_ate = 1;
         }
+        usleep(100);
     }
 }
 
@@ -140,12 +135,10 @@ void    start_simulation(t_data *data)
     i =  0;
     phi = data->philos;
     data->start_time = gettime();
-    // printf("time %lld\n", data->start_time);
     while(i < data->number_of_philos)
     {
         set_long(&data->meal_check, &phi[i].last_meal, gettime());
         safe_thread(&phi[i].thread_id, philo_routine, &phi[i], CREATE);
-        // phi[i].last_meal = gettime();
         i++;
     }
     death_checker(data);

@@ -13,6 +13,17 @@ void print_simulation_info(t_data *data)
         printf("Number of Meals: Unlimited\n");
 }
 
+void special_case(t_data data)
+{
+    if (data.number_of_meals == 0)
+        return ;
+    else
+    {
+        printf("%-6d 1 has taken a fork\n", 0);
+        ft_usleep(data.time_to_die);
+        printf("%-6ld 1 died\n", data.time_to_die);
+    }
+}
 
 int main(int ac, char **av)
 {
@@ -21,22 +32,13 @@ int main(int ac, char **av)
     if(ac == 5 || ac == 6)
     {
         parsing(&data, av);
-        // print_simulation_info(&data);
+        if (data.number_of_meals == 0 || data.number_of_philos == 1)
+        {
+            special_case(data);
+            return (0);
+        }
         init(&data);
-        // return (0);
-        // print_data(&data);
-        // print_philos(&data);
         start_simulation(&data);
-        // printf("END\n");
     }
     return (0);
 }
-
-
-
-    // if (data->number_of_meals == 0) 
-    //     return ; //! We are finished
-    // else if (data->number_of_philos == 1) { //! DO LATER
-    //     // printf("SPECIAL CASE - DO LATER\n");
-    //     return ;
-    // }
