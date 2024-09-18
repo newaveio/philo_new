@@ -116,17 +116,25 @@ void    *philo_routine(void *arg)
     // set_long(&data->meal_check, &philo->last_meal, gettime());
     usleep(100);
     if (philo->id % 2)
-        usleep(100);
+        usleep(data->time_to_eat * 500);
+        // usleep(100);
     while(!get_int(&data->dead_lock, &data->died))
     {
+
         // while(philo->meals > get_int(&philo->data->min_meals_mut, &philo->data->min_meals))
         // {
         //     if (get_int(&data->dead_lock, &data->died))
         //         return (NULL);
         //     usleep(100);
         // }
-        // printf("Min meals = %d\n", get_int(&philo->data->min_meals_mut, &philo->data->min_meals));
+        // printf("Philosopher %d: Min meals = %d, My meals = %d\n", philo->id, get_int(&philo->data->min_meals_mut, &philo->data->min_meals), philo->meals);        
+        
         eat(philo);
+        
+        // safe_mutex(&philo->data->min_meals_mut, LOCK);
+        // if (philo->meals < get_int(&philo->data->min_meals_mut, &philo->data->min_meals))
+        //     set_int(&philo->data->min_meals_mut, &philo->data->min_meals, philo->meals);
+
         sleep_philo(philo);
         think(philo);
         if (get_int(&philo->full_mutex, &philo->full))
