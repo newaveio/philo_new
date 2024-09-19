@@ -40,3 +40,10 @@ void    increase_long(t_mtx *mutex, long *dest)
     (*dest)++;
     safe_mutex(mutex, UNLOCK);
 }
+
+void    increase_int(t_mtx *mutex, int *dest)
+{
+    safe_mutex(mutex, LOCK);
+    (*dest)++;
+    safe_mutex(mutex, UNLOCK);
+}

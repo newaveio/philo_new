@@ -89,6 +89,7 @@ long					get_long(t_mtx *mutex, long *value);
 void					set_int(t_mtx *mutex, int *dest, int value);
 int						get_int(t_mtx *mutex, int *value);
 void					increase_long(t_mtx *mutex, long *dest);
+void					increase_int(t_mtx *mutex, int *dest);
 
 /* init.c */
 void					init(t_data *data);

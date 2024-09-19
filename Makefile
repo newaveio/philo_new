@@ -6,7 +6,7 @@
 #    By: mbest <mbest@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/11 15:33:52 by mbest             #+#    #+#              #
-#    Updated: 2024/09/18 16:43:35 by mbest            ###   ########.fr        #
+#    Updated: 2024/09/19 15:22:39 by mbest            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,8 +57,8 @@ NAME = philo
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -pthread -g3
-# CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread -g3
+# CFLAGS = -Wall -Wextra -Werror -pthread -g3
+CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread -g3
 
 TOTAL_FILES := $(words $(SRCS))
 
