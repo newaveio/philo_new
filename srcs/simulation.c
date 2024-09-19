@@ -10,7 +10,10 @@ void    sleep_philo(t_philo *philo)
 void    think(t_philo *philo)
 {
     write_status(philo, &philo->data->write_lock, THINKING);
-    usleep(100);
+    if (philo->data->number_of_philos % 2 == 0)
+        ft_usleep(philo->data->time_to_eat - philo->data->time_to_sleep);
+    else
+        ft_usleep(philo->data->time_to_eat * 2 - philo->data->time_to_sleep);
 }
 
 void    wait_for_all_threads(t_data *data)
@@ -74,6 +77,7 @@ void    wait_for_all_threads(t_data *data)
 
 void    eat(t_philo *philo)
 {
+    // safe_mutex(&philo->data->eating, LOCK);
     if (philo->id == philo->data->number_of_philos)
     {
         safe_mutex(philo->second_fork, LOCK);
@@ -106,29 +110,9 @@ void    eat(t_philo *philo)
         safe_mutex(&philo->first_fork, UNLOCK);
         safe_mutex(philo->second_fork, UNLOCK);
     }
+    // safe_mutex(&philo->data->eating, UNLOCK);
 }
 
-int find_philo_to_eat(t_data *data)
-{
-    int i;
-    int philo_to_eat;
-    long min_last_meal;
-
-    i = 0;
-    philo_to_eat = -1;
-    min_last_meal = LONG_MAX;
-    while (i < data->number_of_philos)
-    {
-        if (get_int(&data->philos[i].meal_check, &data->philos[i].meals) == get_int(&data->min_meals_mut, &data->min_meals) && \
-            data->philos[i].last_meal < min_last_meal)
-        {
-            min_last_meal = data->philos[i].last_meal;
-            philo_to_eat = i;
-        }
-        i++;
-    }
-    return (philo_to_eat);
-}
 
 void    *philo_routine(void *arg)
 {
@@ -146,20 +130,9 @@ void    *philo_routine(void *arg)
     while(!get_int(&data->dead_lock, &data->died))
     {
 
-        // while(philo->meals > get_int(&philo->data->min_meals_mut, &philo->data->min_meals) || \
-        //         find_philo_to_eat(data) != philo->id)
-        // {
-        //     if (get_int(&data->dead_lock, &data->died))
-        //         return (NULL);
-        //     usleep(100);
-        // }
-        // printf("Philosopher %d: Min meals = %d, My meals = %d\n", philo->id, get_int(&philo->data->min_meals_mut, &philo->data->min_meals), philo->meals);        
         
         eat(philo);
         
-        // safe_mutex(&philo->data->min_meals_mut, LOCK);
-        // if (philo->meals < get_int(&philo->data->min_meals_mut, &philo->data->min_meals))
-        //     set_int(&philo->data->min_meals_mut, &philo->data->min_meals, philo->meals);
 
         sleep_philo(philo);
         think(philo);
@@ -169,11 +142,24 @@ void    *philo_routine(void *arg)
     return (NULL);
 }
 
+        // while(philo->meals > get_int(&philo->data->min_meals_mut, &philo->data->min_meals) || \
+        //         find_philo_to_eat(data) != philo->id)
+        // {
+        //     if (get_int(&data->dead_lock, &data->died))
+        //         return (NULL);
+        //     usleep(100);
+        // }
+        // printf("Philosopher %d: Min meals = %d, My meals = %d\n", philo->id, get_int(&philo->data->min_meals_mut, &philo->data->min_meals), philo->meals);        
+
+        // safe_mutex(&philo->data->min_meals_mut, LOCK);
+        // if (philo->meals < get_int(&philo->data->min_meals_mut, &philo->data->min_meals))
+        //     set_int(&philo->data->min_meals_mut, &philo->data->min_meals, philo->meals);
+
 void    death_checker(t_data *data)
 {
     int i;
-    int min;
-    int current_meals;
+    // int min;
+    // int current_meals;
 
     while (data->all_ate == 0)
     {
@@ -188,16 +174,16 @@ void    death_checker(t_data *data)
             }
             i++;
         }
-        i = 0;
-        min = get_int(&data->philos[0].meal_check, &data->philos[0].meals);
-        while (i < data->number_of_philos)
-        {
-            current_meals = get_int(&data->philos[i].meal_check, &data->philos[i].meals);
-            if (current_meals < min)
-                min = current_meals;
-            i++;
-        }
-        set_int(&data->min_meals_mut, &data->min_meals, min);
+        // i = 0;
+        // min = get_int(&data->philos[0].meal_check, &data->philos[0].meals);
+        // while (i < data->number_of_philos)
+        // {
+        //     current_meals = get_int(&data->philos[i].meal_check, &data->philos[i].meals);
+        //     if (current_meals < min)
+        //         min = current_meals;
+        //     i++;
+        // }
+        // set_int(&data->min_meals_mut, &data->min_meals, min);
         if (get_int(&data->dead_lock, &data->died))
             break;
         i = 0;

@@ -51,6 +51,7 @@ typedef struct s_data
 	t_mtx				dead_lock;
 	t_mtx				meal_check;
 	t_mtx				min_meals_mut;
+	t_mtx				eating;
 	t_philo				*philos;
 }						t_data;
 
