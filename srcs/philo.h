@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:00:06 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/19 19:00:06 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/19 19:10:19 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ typedef struct s_philo
 	t_mtx				first_fork;
 	t_mtx				*second_fork;
 	t_mtx				full_mutex;
-	t_mtx				meal_check;
 	t_data				*data;
 }						t_philo;
 
@@ -58,12 +57,10 @@ typedef struct s_data
 	int					all_ate;
 	int					all_threads_ready;
 	int					min_meals;
-	t_mtx ready_lock; //! Use for sync when lots of philos
+	t_mtx				ready_lock; //! Use for sync when lots of philos
 	t_mtx				write_lock;
 	t_mtx				dead_lock;
 	t_mtx				meal_check;
-	// t_mtx				min_meals_mut;
-	// t_mtx				eating;
 	t_philo				*philos;
 }						t_data;
 
@@ -118,6 +115,7 @@ void					start_simulation(t_data *data);
 void					increase_long(t_mtx *mutex, long *dest);
 void					increase_int(t_mtx *mutex, int *dest);
 void					special_case(t_data data);
+void					wait_for_all_threads(t_data *data);
 
 /* print_functions.c */
 void					err_exit(char *str);

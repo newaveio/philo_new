@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:00:49 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/19 19:00:49 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/19 19:09:27 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,6 @@ void	think(t_philo *philo)
 		ft_usleep(philo->data->time_to_eat * 2 - philo->data->time_to_sleep);
 }
 
-void	wait_for_all_threads(t_data *data)
-{
-	while (!get_int(&data->ready_lock, &data->all_threads_ready))
-	{
-		usleep(100);
-	}
-}
-
 void	eat(t_philo *philo)
 {
 	if (philo->id == philo->data->number_of_philos)
@@ -46,7 +38,6 @@ void	eat(t_philo *philo)
 		write_status(philo, &philo->data->write_lock, EATING);
 		set_long(&philo->data->meal_check, &philo->last_meal, gettime());
 		ft_usleep(philo->data->time_to_eat);
-		// increase_int(&philo->meal_check, &philo->meals);
 		philo->meals++;
 		if (philo->meals == philo->data->number_of_meals)
 			set_int(&philo->full_mutex, &philo->full, 1);
@@ -62,7 +53,6 @@ void	eat(t_philo *philo)
 		write_status(philo, &philo->data->write_lock, EATING);
 		set_long(&philo->data->meal_check, &philo->last_meal, gettime());
 		ft_usleep(philo->data->time_to_eat);
-		// increase_int(&philo->meal_check, &philo->meals);
 		philo->meals++;
 		if (philo->meals == philo->data->number_of_meals)
 			set_int(&philo->full_mutex, &philo->full, 1);
