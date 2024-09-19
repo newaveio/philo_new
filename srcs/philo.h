@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/19 19:00:06 by mbest             #+#    #+#             */
+/*   Updated: 2024/09/19 19:00:06 by mbest            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -41,12 +53,12 @@ typedef struct s_data
 	long				time_to_eat;
 	long				time_to_sleep;
 	long				number_of_meals;
-	long long				start_time;
+	long long			start_time;
 	int					died;
 	int					all_ate;
 	int					all_threads_ready;
 	int					min_meals;
-	t_mtx				ready_lock; //! Use for sync when lots of philos
+	t_mtx ready_lock; //! Use for sync when lots of philos
 	t_mtx				write_lock;
 	t_mtx				dead_lock;
 	t_mtx				meal_check;
@@ -79,18 +91,13 @@ typedef enum s_philo_status
 *** Prototypes
 */
 
-void	exit_cleanly(t_data *data);
-
-// void					print_philos(t_data *data);
-// void					print_data(t_data *data);
+void					exit_cleanly(t_data *data);
 
 /* getter_setter.c */
 void					set_long(t_mtx *mutex, long *dest, long value);
 long					get_long(t_mtx *mutex, long *value);
 void					set_int(t_mtx *mutex, int *dest, int value);
 int						get_int(t_mtx *mutex, int *value);
-void					increase_long(t_mtx *mutex, long *dest);
-void					increase_int(t_mtx *mutex, int *dest);
 
 /* init.c */
 void					init(t_data *data);
@@ -108,10 +115,15 @@ void					safe_mutex(t_mtx *mutex, t_opcode opcode);
 void					start_simulation(t_data *data);
 
 /* utils.c */
+void					increase_long(t_mtx *mutex, long *dest);
+void					increase_int(t_mtx *mutex, int *dest);
+void					special_case(t_data data);
+
+/* print_functions.c */
 void					err_exit(char *str);
+void					print_death(t_philo *philo, t_mtx *mutex);
 void					write_status(t_philo *philo, t_mtx *mutex,
 							t_philo_status status);
-// int						is_simulation_finished(t_data *data);
 
 /* time_functions.c */
 void					ft_usleep(long time_in_ms);

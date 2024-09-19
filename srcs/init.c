@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/19 19:01:04 by mbest             #+#    #+#             */
+/*   Updated: 2024/09/19 19:01:05 by mbest            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-void	assign_second_fork(t_data *data)
+static void	assign_second_fork(t_data *data)
 {
 	int	i;
 
@@ -15,7 +27,7 @@ void	assign_second_fork(t_data *data)
 	}
 }
 
-void	init_philos(t_data *data)
+static void	init_philos(t_data *data)
 {
 	int		i;
 	t_philo	*philo;
@@ -47,8 +59,6 @@ void	init(t_data *data)
 	safe_mutex(&data->dead_lock, INIT);
 	safe_mutex(&data->ready_lock, INIT);
 	safe_mutex(&data->meal_check, INIT);
-	// safe_mutex(&data->min_meals_mut, INIT);
-	// safe_mutex(&data->eating, INIT);
 	init_philos(data);
 	assign_second_fork(data);
 }

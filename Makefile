@@ -6,7 +6,7 @@
 #    By: mbest <mbest@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/11 15:33:52 by mbest             #+#    #+#              #
-#    Updated: 2024/09/19 18:00:28 by mbest            ###   ########.fr        #
+#    Updated: 2024/09/19 18:55:20 by mbest            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,6 +42,7 @@ OBJ_DIR = objs/
 FILES = getter_setter.c \
 		init.c \
 		main.c \
+		print_functions.c \
 		safe_functions.c \
 		simulation.c \
 		parsing.c \

@@ -1,56 +1,39 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/19 18:49:10 by mbest             #+#    #+#             */
+/*   Updated: 2024/09/19 18:58:56 by mbest            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-
-// void    write_status(t_philo *philo, t_mtx *mutex, t_philo_status status)
-// {
-//     long time;
-
-//     time = gettime() - philo->data->start_time;
-//     safe_mutex(mutex, LOCK);
-//     if (!get_int(&philo->data->dead_lock, &philo->data->died))
-//     {
-//         if(status == TAKE_FIRST_FORK && !get_int(&philo->data->dead_lock, &philo->data->died))
-//             printf("%-6ld %d has taken HIS a fork\n", time, philo->id);
-//         else if(status == TAKE_SECOND_FORK && !get_int(&philo->data->dead_lock, &philo->data->died))
-//             printf("%-6ld %d has NEIGHBOOR a fork\n", time, philo->id);
-//         else if (status == EATING && !get_int(&philo->data->dead_lock, &philo->data->died))
-//             printf("%-6ld %d is eating\n", time, philo->id);
-//         else if (status == SLEEPING && !get_int(&philo->data->dead_lock, &philo->data->died))
-//             printf("%-6ld %d is sleeping\n", time, philo->id);
-//         else if (status == THINKING && !get_int(&philo->data->dead_lock, &philo->data->died))
-//             printf("%-6ld %d is thinking\n", time, philo->id);
-//         else if (status == DIED)
-//             printf("%-6ld %d died\n", time, philo->id);
-//     }
-//     safe_mutex(mutex, UNLOCK);
-// }
-
-
-void    write_status(t_philo *philo, t_mtx *mutex, t_philo_status status)
+void	increase_long(t_mtx *mutex, long *dest)
 {
-    long time;
-
-    time = gettime() - philo->data->start_time;
-    safe_mutex(mutex, LOCK);
-    if (!get_int(&philo->data->dead_lock, &philo->data->died))
-    {
-        if((status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK) && !get_int(&philo->data->dead_lock, &philo->data->died))
-            printf("%-6ld %d has taken a fork\n", time, philo->id);
-        else if (status == EATING && !get_int(&philo->data->dead_lock, &philo->data->died))
-            printf("%-6ld %d is eating\n", time, philo->id);
-        else if (status == SLEEPING && !get_int(&philo->data->dead_lock, &philo->data->died))
-            printf("%-6ld %d is sleeping\n", time, philo->id);
-        else if (status == THINKING && !get_int(&philo->data->dead_lock, &philo->data->died))
-            printf("%-6ld %d is thinking\n", time, philo->id);
-        else if (status == DIED)
-            printf("%-6ld %d died\n", time, philo->id);
-    }
-    safe_mutex(mutex, UNLOCK);
+	safe_mutex(mutex, LOCK);
+	(*dest)++;
+	safe_mutex(mutex, UNLOCK);
 }
 
-void    err_exit(char *str)
+void	increase_int(t_mtx *mutex, int *dest)
 {
-    printf("%s\n", str);
-    exit(EXIT_FAILURE);
+	safe_mutex(mutex, LOCK);
+	(*dest)++;
+	safe_mutex(mutex, UNLOCK);
 }
 
+void	special_case(t_data data)
+{
+	if (data.number_of_meals == 0)
+		return ;
+	else
+	{
+		printf("%-6d 1 has taken a fork\n", 0);
+		ft_usleep(data.time_to_die);
+		printf("%-6ld 1 died\n", data.time_to_die);
+	}
+}
