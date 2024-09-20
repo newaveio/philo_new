@@ -6,60 +6,11 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:00:49 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/19 19:09:27 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/20 16:35:38 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	sleep_philo(t_philo *philo)
-{
-	write_status(philo, &philo->data->write_lock, SLEEPING);
-	ft_usleep(philo->data->time_to_sleep);
-}
-
-void	think(t_philo *philo)
-{
-	write_status(philo, &philo->data->write_lock, THINKING);
-	if (philo->data->number_of_philos % 2 == 0)
-		ft_usleep(philo->data->time_to_eat - philo->data->time_to_sleep);
-	else
-		ft_usleep(philo->data->time_to_eat * 2 - philo->data->time_to_sleep);
-}
-
-void	eat(t_philo *philo)
-{
-	if (philo->id == philo->data->number_of_philos)
-	{
-		safe_mutex(philo->second_fork, LOCK);
-		write_status(philo, &philo->data->write_lock, TAKE_SECOND_FORK);
-		safe_mutex(&philo->first_fork, LOCK);
-		write_status(philo, &philo->data->write_lock, TAKE_FIRST_FORK);
-		write_status(philo, &philo->data->write_lock, EATING);
-		set_long(&philo->data->meal_check, &philo->last_meal, gettime());
-		ft_usleep(philo->data->time_to_eat);
-		philo->meals++;
-		if (philo->meals == philo->data->number_of_meals)
-			set_int(&philo->full_mutex, &philo->full, 1);
-		safe_mutex(philo->second_fork, UNLOCK);
-		safe_mutex(&philo->first_fork, UNLOCK);
-	}
-	else
-	{
-		safe_mutex(&philo->first_fork, LOCK);
-		write_status(philo, &philo->data->write_lock, TAKE_FIRST_FORK);
-		safe_mutex(philo->second_fork, LOCK);
-		write_status(philo, &philo->data->write_lock, TAKE_SECOND_FORK);
-		write_status(philo, &philo->data->write_lock, EATING);
-		set_long(&philo->data->meal_check, &philo->last_meal, gettime());
-		ft_usleep(philo->data->time_to_eat);
-		philo->meals++;
-		if (philo->meals == philo->data->number_of_meals)
-			set_int(&philo->full_mutex, &philo->full, 1);
-		safe_mutex(&philo->first_fork, UNLOCK);
-		safe_mutex(philo->second_fork, UNLOCK);
-	}
-}
 
 void	*philo_routine(void *arg)
 {
@@ -80,6 +31,18 @@ void	*philo_routine(void *arg)
 			break ;
 	}
 	return (NULL);
+}
+
+static void	full_checker(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->number_of_philos && get_int(&data->philos[i].full_mutex,
+			&data->philos[i].full))
+		i++;
+	if (i == data->number_of_philos)
+		data->all_ate = 1;
 }
 
 void	death_checker(t_data *data)
@@ -103,46 +66,10 @@ void	death_checker(t_data *data)
 		}
 		if (get_int(&data->dead_lock, &data->died))
 			break ;
-		i = 0;
 		if (data->number_of_meals != -1)
-		{
-			while (i < data->number_of_philos
-				&& get_int(&data->philos[i].full_mutex, &data->philos[i].full))
-				i++;
-			if (i == data->number_of_philos)
-				data->all_ate = 1;
-		}
+			full_checker(data);
 		usleep(100);
 	}
-}
-
-void	exit_sim(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->number_of_philos)
-	{
-		safe_thread(&data->philos[i].thread_id, NULL, NULL, JOIN);
-		i++;
-	}
-}
-
-void	exit_cleanly(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->number_of_philos)
-	{
-		safe_mutex(&data->philos[i].first_fork, DESTROY);
-		safe_mutex(&data->philos[i].full_mutex, DESTROY);
-		i++;
-	}
-	safe_mutex(&data->write_lock, DESTROY);
-	safe_mutex(&data->dead_lock, DESTROY);
-	safe_mutex(&data->meal_check, DESTROY);
-	free(data->philos);
 }
 
 void	start_simulation(t_data *data)

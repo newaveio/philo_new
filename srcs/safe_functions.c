@@ -1,10 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   safe_functions.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/20 16:12:15 by mbest             #+#    #+#             */
+/*   Updated: 2024/09/20 16:13:23 by mbest            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-void	*safe_malloc(size_t bytes, t_data *data)
+void	*safe_malloc(size_t bytes)
 {
 	void	*ret;
 
-	(void)data; //! ADD GARBAGE COLLECTOR
 	ret = malloc(bytes);
 	if (!ret)
 	{

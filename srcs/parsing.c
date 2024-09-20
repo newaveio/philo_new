@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:12:32 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/19 19:13:59 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/20 16:15:55 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ static long	ft_atol(char *str)
 		err_exit("The value is too big. The limit is INT_MAX");
 	return (num);
 }
-
 
 void	parsing(t_data *data, char **av)
 {

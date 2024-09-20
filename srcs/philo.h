@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:00:06 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/19 19:10:19 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/20 16:34:57 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ typedef struct s_data
 	int					all_ate;
 	int					all_threads_ready;
 	int					min_meals;
-	t_mtx				ready_lock; //! Use for sync when lots of philos
 	t_mtx				write_lock;
 	t_mtx				dead_lock;
 	t_mtx				meal_check;
@@ -88,7 +87,11 @@ typedef enum s_philo_status
 *** Prototypes
 */
 
-void					exit_cleanly(t_data *data);
+/* activity.c */
+void					sleep_philo(t_philo *philo);
+void					think(t_philo *philo);
+void					eat_last(t_philo *philo);
+void					eat(t_philo *philo);
 
 /* getter_setter.c */
 void					set_long(t_mtx *mutex, long *dest, long value);
@@ -103,7 +106,7 @@ void					init(t_data *data);
 void					parsing(t_data *data, char **av);
 
 /* safe_functions.c */
-void					*safe_malloc(size_t bytes, t_data *data);
+void					*safe_malloc(size_t bytes);
 void					safe_thread(pthread_t *thread, void *(*foo)(void *),
 							void *args, t_opcode opcode);
 void					safe_mutex(t_mtx *mutex, t_opcode opcode);
@@ -115,7 +118,8 @@ void					start_simulation(t_data *data);
 void					increase_long(t_mtx *mutex, long *dest);
 void					increase_int(t_mtx *mutex, int *dest);
 void					special_case(t_data data);
-void					wait_for_all_threads(t_data *data);
+void					exit_sim(t_data *data);
+void					exit_cleanly(t_data *data);
 
 /* print_functions.c */
 void					err_exit(char *str);

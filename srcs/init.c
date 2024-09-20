@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:01:04 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/19 19:08:33 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/20 16:16:06 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,11 @@ void	init(t_data *data)
 	data->min_meals = 0;
 	data->all_ate = 0;
 	data->died = 0;
-	data->philos = (t_philo *)safe_malloc((sizeof(t_philo)
-				* data->number_of_philos), data);
+	data->philos = (t_philo *)safe_malloc(sizeof(t_philo)
+			* data->number_of_philos);
 	safe_mutex(&data->write_lock, INIT);
 	safe_mutex(&data->meal_check, INIT);
 	safe_mutex(&data->dead_lock, INIT);
-	safe_mutex(&data->ready_lock, INIT); //! not using for now / put in place
 	safe_mutex(&data->meal_check, INIT);
 	init_philos(data);
 	assign_second_fork(data);

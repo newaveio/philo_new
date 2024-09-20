@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:10:57 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/19 19:12:15 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/20 16:11:31 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,14 @@ int	main(int ac, char **av)
 	return (0);
 }
 
-void	special_case(t_data data)
-{
-	if (data.number_of_meals == 0)
-		return ;
-	else
-	{
-		printf("%-6d 1 has taken a fork\n", 0);
-		ft_usleep(data.time_to_die);
-		printf("%-6ld 1 died\n", data.time_to_die);
-	}
-}
+// void	special_case(t_data data)
+// {
+// 	if (data.number_of_meals == 0)
+// 		return ;
+// 	else
+// 	{
+// 		printf("%-6d 1 has taken a fork\n", 0);
+// 		ft_usleep(data.time_to_die);
+// 		printf("%-6ld 1 died\n", data.time_to_die);
+// 	}
+// }

@@ -6,7 +6,7 @@
 #    By: mbest <mbest@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/11 15:33:52 by mbest             #+#    #+#              #
-#    Updated: 2024/09/19 18:55:20 by mbest            ###   ########.fr        #
+#    Updated: 2024/09/20 16:35:13 by mbest            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,8 @@ _SALMON = \033[38;5;209m
 SRC_DIR = srcs/
 OBJ_DIR = objs/
 
-FILES = getter_setter.c \
+FILES = activity.c \
+		getter_setter.c \
 		init.c \
 		main.c \
 		print_functions.c \

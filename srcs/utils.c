@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 18:49:10 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/19 19:05:43 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/20 16:33:48 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,31 @@ void	special_case(t_data data)
 	}
 }
 
-void	wait_for_all_threads(t_data *data)
+void	exit_sim(t_data *data)
 {
-	while (!get_int(&data->ready_lock, &data->all_threads_ready))
+	int	i;
+
+	i = 0;
+	while (i < data->number_of_philos)
 	{
-		usleep(100);
+		safe_thread(&data->philos[i].thread_id, NULL, NULL, JOIN);
+		i++;
 	}
+}
+
+void	exit_cleanly(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->number_of_philos)
+	{
+		safe_mutex(&data->philos[i].first_fork, DESTROY);
+		safe_mutex(&data->philos[i].full_mutex, DESTROY);
+		i++;
+	}
+	safe_mutex(&data->write_lock, DESTROY);
+	safe_mutex(&data->dead_lock, DESTROY);
+	safe_mutex(&data->meal_check, DESTROY);
+	free(data->philos);
 }
