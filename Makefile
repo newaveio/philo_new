@@ -6,7 +6,7 @@
 #    By: mbest <mbest@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/11 15:33:52 by mbest             #+#    #+#              #
-#    Updated: 2024/09/20 16:35:13 by mbest            ###   ########.fr        #
+#    Updated: 2024/09/20 16:59:21 by mbest            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -83,6 +83,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS) srcs/philo.h
 	@$(CC) -o $(NAME) $(OBJS) $(CFLAGS)
+	@printf "\e[2K"
 	@echo "⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ ✅$(BOLD) Philo successfully built!$(END)\n"
 	@printf "\e[?25h"
 
