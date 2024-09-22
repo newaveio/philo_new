@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 16:12:15 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/22 13:08:15 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 14:50:12 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,15 @@ static int	mutex_err_handler(int status)
 int	safe_mutex(t_mtx *mutex, t_opcode opcode)
 {
 	if (opcode == LOCK)
-		return(mutex_err_handler(pthread_mutex_lock(mutex)));
+		return (mutex_err_handler(pthread_mutex_lock(mutex)));
 	else if (opcode == UNLOCK)
-		return(mutex_err_handler(pthread_mutex_unlock(mutex)));
+		return (mutex_err_handler(pthread_mutex_unlock(mutex)));
 	else if (opcode == INIT)
-		return(mutex_err_handler(pthread_mutex_init(mutex, NULL)));
+		return (mutex_err_handler(pthread_mutex_init(mutex, NULL)));
 	else if (opcode == DESTROY)
-		return(mutex_err_handler(pthread_mutex_destroy(mutex)));
+		return (mutex_err_handler(pthread_mutex_destroy(mutex)));
 	else
-		return(err_exit("Wrong op-code for the mutex functions"), 1);
+		return (err_exit("Wrong op-code for the mutex functions"), 1);
 }
 
 static int	thread_err_handler(int status)
@@ -52,9 +52,9 @@ int	safe_thread(pthread_t *thread, void *(*foo)(void *), void *args,
 		t_opcode opcode)
 {
 	if (opcode == CREATE)
-		return(thread_err_handler(pthread_create(thread, NULL, foo, args)));
+		return (thread_err_handler(pthread_create(thread, NULL, foo, args)));
 	else if (opcode == JOIN)
-		return(thread_err_handler(pthread_join(*thread, NULL)));
+		return (thread_err_handler(pthread_join(*thread, NULL)));
 	else
-		return(err_exit("Wrong op-code for the thread functions"), 1);
+		return (err_exit("Wrong op-code for the thread functions"), 1);
 }

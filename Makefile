@@ -6,7 +6,7 @@
 #    By: mbest <mbest@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/11 15:33:52 by mbest             #+#    #+#              #
-#    Updated: 2024/09/22 12:58:31 by mbest            ###   ########.fr        #
+#    Updated: 2024/09/22 15:09:41 by mbest            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,6 +40,7 @@ SRC_DIR = srcs/
 OBJ_DIR = objs/
 
 FILES = activity.c \
+		clean.c \
 		getter_setter.c \
 		init.c \
 		main.c \

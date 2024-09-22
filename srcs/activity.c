@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 16:16:50 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/22 12:42:34 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 14:48:16 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ void	think(t_philo *philo)
 	if (philo->data->number_of_philos % 2 == 0)
 		ft_usleep(philo->data->time_to_eat - philo->data->time_to_sleep + 10);
 	else
-		ft_usleep(philo->data->time_to_eat * 2 - philo->data->time_to_sleep + 10);
+		ft_usleep(philo->data->time_to_eat * 2 - philo->data->time_to_sleep
+			+ 10);
 }
 
 void	eat_last(t_philo *philo)

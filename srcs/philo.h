@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:00:06 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/22 13:14:18 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 14:56:17 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,11 @@ void					think(t_philo *philo);
 void					eat_last(t_philo *philo);
 void					eat(t_philo *philo);
 
+/* clean.c */
+void					cleanup_philos_mutexes(t_data *data, int index);
+void					exit_sim(t_data *data);
+void					exit_cleanly(t_data *data);
+
 /* getter_setter.c */
 void					set_long(t_mtx *mutex, long *dest, long value);
 long					get_long(t_mtx *mutex, long *value);
@@ -100,25 +105,26 @@ void					set_int(t_mtx *mutex, int *dest, int value);
 int						get_int(t_mtx *mutex, int *value);
 
 /* init.c */
-int					init(t_data *data);
+int						init(t_data *data);
+int						ft_alloc(t_data *data);
 
 /* parsing.c */
-int					parsing(t_data *data, char **av);
+int						parsing(t_data *data, char **av);
 
 /* safe_functions.c */
-int					safe_thread(pthread_t *thread, void *(*foo)(void *),
+int						safe_thread(pthread_t *thread, void *(*foo)(void *),
 							void *args, t_opcode opcode);
-int					safe_mutex(t_mtx *mutex, t_opcode opcode);
+int						safe_mutex(t_mtx *mutex, t_opcode opcode);
 
 /* simulation.c */
 void					start_simulation(t_data *data);
 
 /* utils.c */
+int						is_space(char c);
+int						is_digit(char c);
 void					increase_long(t_mtx *mutex, long *dest);
 void					increase_int(t_mtx *mutex, int *dest);
-void					special_case(t_data data);
-void					exit_sim(t_data *data);
-void					exit_cleanly(t_data *data);
+int						ft_alloc(t_data *data);
 
 /* print_functions.c */
 void					err_exit(char *str);

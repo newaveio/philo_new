@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 18:59:29 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/19 18:59:30 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 14:57:22 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@ long	gettime(void)
 	struct timeval	tv;
 
 	time = 0;
-	if (gettimeofday(&tv, NULL) == -1)
-		err_exit("gettimeofday() failed");
+	gettimeofday(&tv, NULL);
 	time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 	return (time);
 }

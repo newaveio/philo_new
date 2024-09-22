@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:00:49 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/20 16:35:38 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 15:09:52 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,23 @@ void	death_checker(t_data *data)
 	}
 }
 
+void	cleanup_threads_and_mutexes(t_philo *philos, int index)
+{
+	int	i;
+
+	i = 0;
+	while (i < index)
+	{
+		if (philos[i].thread_id)
+		{
+			pthread_join(philos[i].thread_id, NULL);
+		}
+		safe_mutex(&philos[i].full_mutex, DESTROY);
+		safe_mutex(&philos[i].first_fork, DESTROY);
+		i++;
+	}
+}
+
 void	start_simulation(t_data *data)
 {
 	int		i;
@@ -83,7 +100,11 @@ void	start_simulation(t_data *data)
 	while (i < data->number_of_philos)
 	{
 		set_long(&data->meal_check, &phi[i].last_meal, gettime());
-		safe_thread(&phi[i].thread_id, philo_routine, &phi[i], CREATE);
+		if (safe_thread(&phi[i].thread_id, philo_routine, &phi[i], CREATE))
+		{
+			cleanup_threads_and_mutexes(data->philos, i);
+			return ;
+		}
 		i++;
 	}
 	death_checker(data);

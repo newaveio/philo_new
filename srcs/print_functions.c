@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 18:42:51 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/22 13:06:11 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 15:00:22 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ void	print_death(t_philo *philo, t_mtx *mutex)
 	long	time;
 
 	time = gettime() - philo->data->start_time;
-	safe_mutex(mutex, LOCK);
+	pthread_mutex_lock(mutex);
 	printf("%-6ld %d died\n", time, philo->id);
-	safe_mutex(mutex, UNLOCK);
+	pthread_mutex_unlock(mutex);
 }
 
 void	write_status(t_philo *philo, t_mtx *mutex, t_philo_status status)
@@ -32,7 +32,7 @@ void	write_status(t_philo *philo, t_mtx *mutex, t_philo_status status)
 	long	time;
 
 	time = gettime() - philo->data->start_time;
-	safe_mutex(mutex, LOCK);
+	pthread_mutex_lock(mutex);
 	if (!get_int(&philo->data->dead_lock, &philo->data->died))
 	{
 		if ((status == TAKE_FIRST_FORK || status == TAKE_SECOND_FORK)
@@ -50,5 +50,5 @@ void	write_status(t_philo *philo, t_mtx *mutex, t_philo_status status)
 		else if (status == DIED)
 			printf("%-6ld %d died\n", time, philo->id);
 	}
-	safe_mutex(mutex, UNLOCK);
+	pthread_mutex_unlock(mutex);
 }

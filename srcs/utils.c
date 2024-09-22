@@ -6,63 +6,44 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 18:49:10 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/20 16:33:48 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 14:56:24 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+int	is_space(char c)
+{
+	if (c == 32 || (c >= 9 && c <= 13))
+		return (1);
+	return (0);
+}
+
+int	is_digit(char c)
+{
+	if (c >= '0' && c <= '9')
+		return (1);
+	return (0);
+}
+
 void	increase_long(t_mtx *mutex, long *dest)
 {
-	safe_mutex(mutex, LOCK);
+	pthread_mutex_lock(mutex);
 	(*dest)++;
-	safe_mutex(mutex, UNLOCK);
+	pthread_mutex_unlock(mutex);
 }
 
 void	increase_int(t_mtx *mutex, int *dest)
 {
-	safe_mutex(mutex, LOCK);
+	pthread_mutex_lock(mutex);
 	(*dest)++;
-	safe_mutex(mutex, UNLOCK);
+	pthread_mutex_unlock(mutex);
 }
 
-void	special_case(t_data data)
+int	ft_alloc(t_data *data)
 {
-	if (data.number_of_meals == 0)
-		return ;
-	else
-	{
-		printf("%-6d 1 has taken a fork\n", 0);
-		ft_usleep(data.time_to_die);
-		printf("%-6ld 1 died\n", data.time_to_die);
-	}
-}
-
-void	exit_sim(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->number_of_philos)
-	{
-		safe_thread(&data->philos[i].thread_id, NULL, NULL, JOIN);
-		i++;
-	}
-}
-
-void	exit_cleanly(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->number_of_philos)
-	{
-		safe_mutex(&data->philos[i].first_fork, DESTROY);
-		safe_mutex(&data->philos[i].full_mutex, DESTROY);
-		i++;
-	}
-	safe_mutex(&data->write_lock, DESTROY);
-	safe_mutex(&data->dead_lock, DESTROY);
-	safe_mutex(&data->meal_check, DESTROY);
-	free(data->philos);
+	data->philos = (t_philo *)malloc(sizeof(t_philo) * data->number_of_philos);
+	if (!data->philos)
+		return (1);
+	return (0);
 }
