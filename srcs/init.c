@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:01:04 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/20 16:16:06 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 13:29:46 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static void	assign_second_fork(t_data *data)
 	}
 }
 
-static void	init_philos(t_data *data)
+static int	init_philos(t_data *data)
 {
 	int		i;
 	t_philo	*philo;
@@ -40,23 +40,66 @@ static void	init_philos(t_data *data)
 		philo->full = 0;
 		philo->meals = 0;
 		philo->data = data;
-		pthread_mutex_init(&philo->full_mutex, NULL);
-		pthread_mutex_init(&philo->first_fork, NULL);
+		if(safe_mutex(&philo->full_mutex, INIT))
+		{
+			while (i-- > 0)
+			{
+				philo = data->philos + i;
+				safe_mutex(&philo->full_mutex, DESTROY);
+				safe_mutex(&philo->first_fork, DESTROY);
+			}	
+			return (1);
+		}
+		if (safe_mutex(&philo->first_fork, INIT))
+		{
+			safe_mutex(&philo->first_fork, DESTROY);
+			while (i-- > 0)
+			{
+				philo = data->philos + i;
+				safe_mutex(&philo->full_mutex, DESTROY);
+				safe_mutex(&philo->first_fork, DESTROY);
+			}
+			return (1);
+		}
 		i++;
 	}
+	return (0);
 }
 
-void	init(t_data *data)
+static int init_mutex_data(t_data *data)
+{
+	if(safe_mutex(&data->write_lock, INIT))
+		return (1);
+	if (safe_mutex(&data->meal_check, INIT))
+	{
+		safe_mutex(&data->write_lock, DESTROY);
+		return (1);
+	}
+	if (safe_mutex(&data->dead_lock, INIT))
+	{
+		safe_mutex(&data->write_lock, DESTROY);
+		safe_mutex(&data->meal_check, DESTROY);
+		return (1);
+	}
+	return (0);
+}
+
+int	init(t_data *data)
 {
 	data->min_meals = 0;
 	data->all_ate = 0;
 	data->died = 0;
-	data->philos = (t_philo *)safe_malloc(sizeof(t_philo)
+	data->philos = (t_philo *)malloc(sizeof(t_philo)
 			* data->number_of_philos);
-	safe_mutex(&data->write_lock, INIT);
-	safe_mutex(&data->meal_check, INIT);
-	safe_mutex(&data->dead_lock, INIT);
-	safe_mutex(&data->meal_check, INIT);
-	init_philos(data);
+	if (!data->philos)
+		return (1);
+	if(init_mutex_data(data))
+		return (1);
+	// safe_mutex(&data->write_lock, INIT);
+	// safe_mutex(&data->meal_check, INIT);
+	// safe_mutex(&data->dead_lock, INIT);
+	// safe_mutex(&data->meal_check, INIT);
+	if(init_philos(data))
+		return (1);
 	assign_second_fork(data);
 }

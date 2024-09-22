@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 18:42:51 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/19 18:59:13 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 13:06:11 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	err_exit(char *str)
 {
 	printf("%s\n", str);
-	exit(EXIT_FAILURE);
 }
 
 void	print_death(t_philo *philo, t_mtx *mutex)

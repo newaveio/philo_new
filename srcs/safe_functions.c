@@ -6,61 +6,55 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 16:12:15 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/20 16:13:23 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 13:08:15 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*safe_malloc(size_t bytes)
-{
-	void	*ret;
-
-	ret = malloc(bytes);
-	if (!ret)
-	{
-		exit(0);
-	}
-	return (ret);
-}
-
-static void	mutex_err_handler(int status)
+static int	mutex_err_handler(int status)
 {
 	if (status == 0)
-		return ;
+		return (0);
 	else
+	{
 		err_exit("Problem occured with the mutex functions");
+		return (1);
+	}
 }
 
-void	safe_mutex(t_mtx *mutex, t_opcode opcode)
+int	safe_mutex(t_mtx *mutex, t_opcode opcode)
 {
 	if (opcode == LOCK)
-		mutex_err_handler(pthread_mutex_lock(mutex));
+		return(mutex_err_handler(pthread_mutex_lock(mutex)));
 	else if (opcode == UNLOCK)
-		mutex_err_handler(pthread_mutex_unlock(mutex));
+		return(mutex_err_handler(pthread_mutex_unlock(mutex)));
 	else if (opcode == INIT)
-		mutex_err_handler(pthread_mutex_init(mutex, NULL));
+		return(mutex_err_handler(pthread_mutex_init(mutex, NULL)));
 	else if (opcode == DESTROY)
-		mutex_err_handler(pthread_mutex_destroy(mutex));
+		return(mutex_err_handler(pthread_mutex_destroy(mutex)));
 	else
-		err_exit("Wrong op-code for the mutex functions");
+		return(err_exit("Wrong op-code for the mutex functions"), 1);
 }
 
-static void	thread_err_handler(int status)
+static int	thread_err_handler(int status)
 {
 	if (status == 0)
-		return ;
+		return (0);
 	else
+	{
 		err_exit("Problem occured with the thread functions");
+		return (1);
+	}
 }
 
-void	safe_thread(pthread_t *thread, void *(*foo)(void *), void *args,
+int	safe_thread(pthread_t *thread, void *(*foo)(void *), void *args,
 		t_opcode opcode)
 {
 	if (opcode == CREATE)
-		thread_err_handler(pthread_create(thread, NULL, foo, args));
+		return(thread_err_handler(pthread_create(thread, NULL, foo, args)));
 	else if (opcode == JOIN)
-		thread_err_handler(pthread_join(*thread, NULL));
+		return(thread_err_handler(pthread_join(*thread, NULL)));
 	else
-		err_exit("Wrong op-code for the thread functions");
+		return(err_exit("Wrong op-code for the thread functions"), 1);
 }

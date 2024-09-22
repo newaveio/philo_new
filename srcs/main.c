@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:10:57 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/20 16:11:31 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 13:20:04 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,15 @@ int	main(int ac, char **av)
 
 	if (ac == 5 || ac == 6)
 	{
-		parsing(&data, av);
-		if (data.number_of_meals == 0 || data.number_of_philos == 1)
+		if (parsing(&data, av))
+			return (1);
+		if(init(&data))
 		{
-			special_case(data);
-			return (0);
+			//clean memory
+			return (1);
 		}
-		init(&data);
+		if(!data.philos)
+			err_exit("Malloc failed\n");
 		start_simulation(&data);
 	}
 	return (0);

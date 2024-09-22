@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:12:32 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/20 16:15:55 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 12:56:17 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ static char	*valid_input(char *str)
 		len++;
 		str++;
 	}
+	if (*str)
+		err_exit("NOT DIGIT\n");
 	if (len > 10)
 		err_exit("The value is too big. The limit is INT_MAX");
 	return (number);
@@ -67,7 +69,7 @@ static long	ft_atol(char *str)
 	return (num);
 }
 
-void	parsing(t_data *data, char **av)
+int	parsing(t_data *data, char **av)
 {
 	data->number_of_philos = ft_atol(av[1]);
 	data->time_to_die = ft_atol(av[2]);
@@ -77,4 +79,10 @@ void	parsing(t_data *data, char **av)
 		data->number_of_meals = ft_atol(av[5]);
 	else
 		data->number_of_meals = -1;
+	if (data->number_of_meals == 0 || data->number_of_philos == 1)
+	{
+		special_case(*data);
+		return (1);
+	}
+	return (0);
 }

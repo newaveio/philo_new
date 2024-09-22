@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:00:06 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/20 16:34:57 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 13:14:18 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,16 +100,15 @@ void					set_int(t_mtx *mutex, int *dest, int value);
 int						get_int(t_mtx *mutex, int *value);
 
 /* init.c */
-void					init(t_data *data);
+int					init(t_data *data);
 
 /* parsing.c */
-void					parsing(t_data *data, char **av);
+int					parsing(t_data *data, char **av);
 
 /* safe_functions.c */
-void					*safe_malloc(size_t bytes);
-void					safe_thread(pthread_t *thread, void *(*foo)(void *),
+int					safe_thread(pthread_t *thread, void *(*foo)(void *),
 							void *args, t_opcode opcode);
-void					safe_mutex(t_mtx *mutex, t_opcode opcode);
+int					safe_mutex(t_mtx *mutex, t_opcode opcode);
 
 /* simulation.c */
 void					start_simulation(t_data *data);
