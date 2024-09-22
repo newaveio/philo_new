@@ -6,7 +6,7 @@
 /*   By: mbest <mbest@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 19:00:06 by mbest             #+#    #+#             */
-/*   Updated: 2024/09/22 14:56:17 by mbest            ###   ########.fr       */
+/*   Updated: 2024/09/22 15:28:54 by mbest            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ int						ft_alloc(t_data *data);
 
 /* parsing.c */
 int						parsing(t_data *data, char **av);
+void					special_case(t_data data);
 
 /* safe_functions.c */
 int						safe_thread(pthread_t *thread, void *(*foo)(void *),
